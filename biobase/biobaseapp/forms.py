@@ -20,7 +20,7 @@ class LoginForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        login = cleaned_data.get('login')
+        login = cleaned_data.get('email')
         password = cleaned_data.get('password')
 
         if login and password:
