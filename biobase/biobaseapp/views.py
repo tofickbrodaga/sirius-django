@@ -6,9 +6,8 @@ def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            login = form.cleaned_data['login']
-            # Действие после успешного входа
-            return redirect('home')  # Замените 'home' на URL вашей главной страницы
+            form.cleaned_data['login']
+            return redirect('home')
     else:
         form = LoginForm()
 

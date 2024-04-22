@@ -1,11 +1,12 @@
 from django.db import models
 import uuid
+from django.contrib.auth.models import AbstractUser
 
-class Users(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    login = models.CharField(unique=True, max_length=255)
-    password = models.CharField(max_length=255)
-    access = models.CharField(max_length=255)
+class CustomUser(AbstractUser):
+    access = models.CharField(max_length=50)
+
+    def __str__(self) -> str:
+        return f'{self.first_name} {self.last_name}'
 
 
 class Strains(models.Model):
@@ -16,7 +17,7 @@ class Strains(models.Model):
     mutations = models.TextField()
     transformations = models.TextField()
     creation_date = models.DateField()
-    created_by = models.ForeignKey(Users, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class StrainProcessing(models.Model):
@@ -24,7 +25,7 @@ class StrainProcessing(models.Model):
     strain_id = models.ForeignKey(Strains, on_delete=models.CASCADE)
     processing_date = models.DateField()
     description = models.TextField()
-    responsible = models.ForeignKey(Users, on_delete=models.CASCADE)
+    responsible = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class SubstanceIdentification(models.Model):
@@ -32,7 +33,7 @@ class SubstanceIdentification(models.Model):
     strain_id = models.ForeignKey(Strains, on_delete=models.CASCADE)
     identification_date = models.DateField()
     results = models.TextField()
-    identified_by = models.ForeignKey(Users, on_delete=models.CASCADE)
+    identified_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class Experiments(models.Model):
@@ -42,7 +43,7 @@ class Experiments(models.Model):
     end_date = models.DateField()
     growth_medium = models.TextField()
     results = models.TextField()
-    created_by = models.ForeignKey(Users, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class CultivationPlanning(models.Model):
@@ -52,7 +53,7 @@ class CultivationPlanning(models.Model):
     completion_date = models.DateField()
     growth_medium = models.TextField()
     status = models.TextField()
-    started_by = models.ForeignKey(Users, on_delete=models.CASCADE)
+    started_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class Projects(models.Model):
@@ -61,7 +62,7 @@ class Projects(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     results = models.TextField()
-    created_by = models.ForeignKey(Users, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class Cultures(models.Model):
@@ -69,4 +70,4 @@ class Cultures(models.Model):
     project_id = models.ForeignKey(Projects, on_delete=models.CASCADE)
     planning_date = models.DateField()
     results = models.TextField()
-    created_by = models.ForeignKey(Users, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

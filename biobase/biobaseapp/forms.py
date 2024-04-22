@@ -1,5 +1,18 @@
 from django import forms
-from .models import Users
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from .models import CustomUser
+
+class CustomUserCreationForm(UserCreationForm):
+
+    class Meta(UserCreationForm):
+        model = CustomUser
+        fields = ('username', 'email')
+
+class CustomUserChangeForm(UserChangeForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ('username', 'email')
 
 class LoginForm(forms.Form):
     login = forms.CharField(label="Логин")
@@ -12,9 +25,9 @@ class LoginForm(forms.Form):
 
         if login and password:
             try:
-                user = Users.objects.get(login=login)
+                user = CustomUser.objects.get(login=login)
                 if user.password != password:
                     raise forms.ValidationError("Неверный логин или пароль.")
-            except Users.DoesNotExist:
+            except CustomUser.DoesNotExist:
                 raise forms.ValidationError("Пользователь с таким логином не найден.")
         return cleaned_data
