@@ -17,6 +17,6 @@ def login_view(request):
 
     error_message = None
     if request.method == 'POST' and not form.is_valid():
-        error_message = "Неверный логин или пароль."
+        error_message = 'Неверный логин или пароль.'
 
     return render(request, 'login.html', {'form': form, 'error_message': error_message})
