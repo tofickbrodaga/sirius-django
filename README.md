@@ -4,7 +4,10 @@
 
 ### ER-schema
 
-![database_bio](https://github.com/tofickbrodaga/sirius-django/assets/101170461/7bb2a722-ffe5-42d5-b0ec-d58b8f727fa1)
+![photo_2024-04-23 18 38 31](https://github.com/tofickbrodaga/sirius-django/assets/101170461/cf1e1bd9-2c05-42c5-92f5-4f27b1fd8c02)
+
+
+
 
 ### Create docker
 ```
