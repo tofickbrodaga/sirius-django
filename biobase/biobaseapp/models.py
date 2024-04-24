@@ -22,6 +22,8 @@ def validate_date(value):
 
 
 class CustomUser(AbstractUser):
+    token = models.CharField(max_length=100, blank=True)
+
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
 

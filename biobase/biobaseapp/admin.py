@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import CustomUser, Strains, SubstanceIdentification, Projects, StrainProcessing, CultivationPlanning, Projects, Cultures, Experiments
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
