@@ -15,12 +15,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from biobaseapp.views import login_view, home_page
+from django.urls import path, include
+from biobaseapp.views import login_view, home_page, CustomUserViewSet, StrainsViewSet, StrainProcessingViewSet, SubstanceIdentificationViewSet, ExperimentsViewSet, CultivationPlanningViewSet, ProjectsViewSet, CulturesViewSet
+
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'users', CustomUserViewSet)
+router.register(r'strains', StrainsViewSet)
+router.register(r'strain_processing', StrainProcessingViewSet)
+router.register(r'substance_identification', SubstanceIdentificationViewSet)
+router.register(r'experiments', ExperimentsViewSet)
+router.register(r'cultivation_planning', CultivationPlanningViewSet)
+router.register(r'projects', ProjectsViewSet)
+router.register(r'cultures', CulturesViewSet)
 
 urlpatterns = [
     path('', login_view, name='login'),
     path('admin/', admin.site.urls),
     path('home/', home_page, name='index'),
+    path('', include(router.urls)),
 ]
 
