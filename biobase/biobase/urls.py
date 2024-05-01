@@ -16,17 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from biobaseapp.views import login_view, home_page, CustomUserViewSet, StrainsViewSet, StrainProcessingViewSet, SubstanceIdentificationViewSet, ExperimentsViewSet, CultivationPlanningViewSet, ProjectsViewSet, CulturesViewSet
+from biobaseapp.views import login_view, home_page, StrainViewSet, StrainProcessingViewSet, SubstanceViewSet, ExperimentsViewSet, CultivationViewSet, ProjectsViewSet, CulturesViewSet
 
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r'users', CustomUserViewSet)
-router.register(r'strains', StrainsViewSet)
+router.register(r'strains', StrainViewSet)
 router.register(r'strain_processing', StrainProcessingViewSet)
-router.register(r'substance_identification', SubstanceIdentificationViewSet)
+router.register(r'substance_identification', SubstanceViewSet)
 router.register(r'experiments', ExperimentsViewSet)
-router.register(r'cultivation_planning', CultivationPlanningViewSet)
+router.register(r'cultivation_planning', CultivationViewSet)
 router.register(r'projects', ProjectsViewSet)
 router.register(r'cultures', CulturesViewSet)
 
@@ -34,6 +33,6 @@ urlpatterns = [
     path('', login_view, name='login'),
     path('admin/', admin.site.urls),
     path('home/', home_page, name='index'),
-    path('', include(router.urls)),
+    path('api/', include(router.urls), name='api'),
 ]
 

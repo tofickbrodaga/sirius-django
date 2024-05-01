@@ -1,54 +1,63 @@
-# views.py
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
-from .forms import LoginForm
+from rest_framework.exceptions import NotFound
 from rest_framework import viewsets
+from rest_framework import viewsets, permissions, authentication
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from typing import Callable
+
+
+from .forms import LoginForm
 from .models import CustomUser, Strains, StrainProcessing, SubstanceIdentification, Experiments, CultivationPlanning, Projects, Cultures
 from .serializers import CustomUserSerializer, StrainsSerializer, StrainProcessingSerializer, SubstanceIdentificationSerializer, ExperimentsSerializer, CultivationPlanningSerializer, ProjectsSerializer, CulturesSerializer
 
+safe_methods = 'GET', 'HEAD', 'OPTIONS'
+unsafe_methods = 'POST', 'DELETE', 'PUT'
 
-class CustomUserViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
+def check_auth(view: Callable) -> Callable:
+    def new_view(request):
+        if not (request.user and request.user.is_authenticated):
+            return redirect('unauthorized')
+        return view(request)
+    return new_view
 
+class MyPermission(permissions.BasePermission):
+    def has_permission(self, request, _):
+        if request.method in safe_methods:
+            return bool(request.user and request.user.is_authenticated)
+        elif request.method in unsafe_methods:
+            return bool(request.user and request.user.is_superuser)
+        return False
 
-class StrainsViewSet(viewsets.ModelViewSet):
-    queryset = Strains.objects.all()
-    serializer_class = StrainsSerializer
+def create_viewset(model_class, serializer):
+    class ViewSet(viewsets.ModelViewSet):
+        queryset = model_class.objects.all()
+        serializer_class = serializer
+        permission_classes = [MyPermission]
+        authentication_classes = [authentication.TokenAuthentication]
 
+    return ViewSet
 
-class StrainProcessingViewSet(viewsets.ModelViewSet):
-    queryset = StrainProcessing.objects.all()
-    serializer_class = StrainProcessingSerializer
-
-
-class SubstanceIdentificationViewSet(viewsets.ModelViewSet):
-    queryset = SubstanceIdentification.objects.all()
-    serializer_class = SubstanceIdentificationSerializer
-
-
-class ExperimentsViewSet(viewsets.ModelViewSet):
-    queryset = Experiments.objects.all()
-    serializer_class = ExperimentsSerializer
-
-
-class CultivationPlanningViewSet(viewsets.ModelViewSet):
-    queryset = CultivationPlanning.objects.all()
-    serializer_class = CultivationPlanningSerializer
-
-
-class ProjectsViewSet(viewsets.ModelViewSet):
-    queryset = Projects.objects.all()
-    serializer_class = ProjectsSerializer
-
-
-class CulturesViewSet(viewsets.ModelViewSet):
-    queryset = Cultures.objects.all()
-    serializer_class = CulturesSerializer
+StrainViewSet = create_viewset(Strains, StrainsSerializer)
+StrainProcessingViewSet = create_viewset(StrainProcessing, StrainProcessingSerializer)
+SubstanceViewSet = create_viewset(SubstanceIdentification, SubstanceIdentificationSerializer)
+ExperimentsViewSet = create_viewset(Experiments, ExperimentsSerializer)
+CultivationViewSet = create_viewset(CultivationPlanning, CultivationPlanningSerializer)
+ProjectsViewSet = create_viewset(Projects, ProjectsSerializer)
+CulturesViewSet = create_viewset(Cultures, CulturesSerializer)
 
 
 def home_page(request):
-        return render(request, 'index.html')
+    data = {
+        'message': 'Добро пожаловать на домашнюю страницу!'
+    }
+    context = {
+        'data': data
+    }
+    return render(request, 'index.html', context)
 
 
 def login_view(request):
