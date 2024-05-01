@@ -1,18 +1,14 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
-from rest_framework.exceptions import NotFound
 from rest_framework import viewsets
-from rest_framework import viewsets, permissions, authentication
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import BasePermission
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 from typing import Callable
 
 
 from .forms import LoginForm
-from .models import CustomUser, Strains, StrainProcessing, SubstanceIdentification, Experiments, CultivationPlanning, Projects, Cultures
-from .serializers import CustomUserSerializer, StrainsSerializer, StrainProcessingSerializer, SubstanceIdentificationSerializer, ExperimentsSerializer, CultivationPlanningSerializer, ProjectsSerializer, CulturesSerializer
+from .models import Strains, StrainProcessing, SubstanceIdentification, Experiments, CultivationPlanning, Projects, Cultures
+from .serializers import StrainsSerializer, StrainProcessingSerializer, SubstanceIdentificationSerializer, ExperimentsSerializer, CultivationPlanningSerializer, ProjectsSerializer, CulturesSerializer
 
 safe_methods = 'GET', 'HEAD', 'OPTIONS'
 unsafe_methods = 'POST', 'DELETE', 'PUT'
@@ -24,22 +20,22 @@ def check_auth(view: Callable) -> Callable:
         return view(request)
     return new_view
 
-class MyPermission(permissions.BasePermission):
-    def has_permission(self, request, _):
-        if request.method in safe_methods:
-            return bool(request.user and request.user.is_authenticated)
-        elif request.method in unsafe_methods:
-            return bool(request.user and request.user.is_superuser)
-        return False
+class MyPermission(BasePermission):
+     def has_permission(self, request, _):
+         if request.method in safe_methods:
+             return bool(request.user and request.user.is_authenticated)
+         elif request.method in unsafe_methods:
+             return bool(request.user and request.user.is_superuser)
+         return False
 
 def create_viewset(model_class, serializer):
-    class ViewSet(viewsets.ModelViewSet):
-        queryset = model_class.objects.all()
-        serializer_class = serializer
-        permission_classes = [MyPermission]
-        authentication_classes = [authentication.TokenAuthentication]
+     class ViewSet(viewsets.ModelViewSet):
+         queryset = model_class.objects.all()
+         serializer_class = serializer
+         permission_classes = [MyPermission]
+         authentication_classes = [TokenAuthentication]
 
-    return ViewSet
+     return ViewSet
 
 StrainViewSet = create_viewset(Strains, StrainsSerializer)
 StrainProcessingViewSet = create_viewset(StrainProcessing, StrainProcessingSerializer)
