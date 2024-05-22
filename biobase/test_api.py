@@ -2,7 +2,7 @@ from rest_framework.test import APIClient, APITestCase
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
-from biobaseapp.models import Strains, StrainProcessing, SubstanceIdentification, Experiments, CultivationPlanning, Projects, Cultures
+from biobaseapp.models import Strains, Projects
 from django.utils.timezone import now
 
 CustomUser = get_user_model()
