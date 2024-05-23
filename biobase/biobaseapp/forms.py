@@ -17,17 +17,17 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class LoginForm(forms.Form):
-    login = forms.CharField(label='Логин')
+    username = forms.CharField(label='Логин')
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
 
     def clean(self):
         cleaned_data = super().clean()
-        login = cleaned_data.get('login')
+        username = cleaned_data.get('username')
         password = cleaned_data.get('password')
 
-        if login and password:
+        if username and password:
             try:
-                user = CustomUser.objects.get(username=login)
+                user = CustomUser.objects.get(username=username)
                 if not user.check_password(password):
                     raise forms.ValidationError('Неверный логин или пароль.')
                 
@@ -37,3 +37,4 @@ class LoginForm(forms.Form):
             except CustomUser.DoesNotExist:
                 raise forms.ValidationError('Пользователь с таким логином не найден.')
         return cleaned_data
+

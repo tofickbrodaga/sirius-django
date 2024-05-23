@@ -63,7 +63,7 @@ def login_view(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             login_data = form.cleaned_data
-            user = authenticate(request, username=login_data['login'], password=login_data['password'])
+            user = authenticate(request, username=login_data['username'], password=login_data['password'])
             if user is not None:
                 login(request, user)
                 return redirect('index')

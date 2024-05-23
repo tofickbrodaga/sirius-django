@@ -189,7 +189,7 @@ class SubstanceIdentificationAPITest(APITestCase):
             created_by=self.user
         )
 
-    def api_methods(self, user: CustomUser, strain: Strains, token: Token, post_exp: int, put_exp: int, delete_exp: int):
+    def api_methods(self, user: CustomUser, strain: Strains, token: Token, post_exp: int, put_exp: int, delete_exp: int): # type: ignore
         self.client.force_authenticate(user=user, token=token)
 
         creation_attrs = {
@@ -270,7 +270,7 @@ class ExperimentsAPITest(APITestCase):
             created_by=self.user
         )
 
-    def api_methods(self, user: CustomUser, strain: Strains, token: Token, post_exp: int, put_exp: int, delete_exp: int):
+    def api_methods(self, user: CustomUser, strain: Strains, token: Token, post_exp: int, put_exp: int, delete_exp: int): # type: ignore
         self.client.force_authenticate(user=user, token=token)
 
         creation_attrs = {
@@ -353,7 +353,7 @@ class CultivationPlanningAPITest(APITestCase):
             created_by=self.user
         )
 
-    def api_methods(self, user: CustomUser, strain: Strains, token: Token, post_exp: int, put_exp: int, delete_exp: int):
+    def api_methods(self, user: CustomUser, strain: Strains, token: Token, post_exp: int, put_exp: int, delete_exp: int): # type: ignore
         self.client.force_authenticate(user=user, token=token)
 
         creation_attrs = {
@@ -426,7 +426,7 @@ class ProjectsAPITest(APITestCase):
 
         self.url = '/api/projects/'
 
-    def api_methods(self, user: CustomUser, token: Token, post_exp: int, put_exp: int, delete_exp: int):
+    def api_methods(self, user: CustomUser, token: Token, post_exp: int, put_exp: int, delete_exp: int): # type: ignore
         self.client.force_authenticate(user=user, token=token)
 
         creation_attrs = {
@@ -506,7 +506,7 @@ class CulturesAPITest(APITestCase):
             created_by=self.user
         )
 
-    def api_methods(self, user: CustomUser, project: Projects, token: Token, post_exp: int, put_exp: int, delete_exp: int):
+    def api_methods(self, user: CustomUser, project: Projects, token: Token, post_exp: int, put_exp: int, delete_exp: int): # type: ignore
         self.client.force_authenticate(user=user, token=token)
 
         creation_attrs = {
