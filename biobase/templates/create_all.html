@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Model</title>
+</head>
+<body>
+    <h1>Create Model</h1>
+    <form method="get">
+        <label for="model">Choose a model:</label>
+        <select name="model" id="model" onchange="this.form.submit()">
+            <option value="">--Select a model--</option>
+            {% for model in model_forms %}
+                <option value="{{ model }}" {% if selected_model == model %}selected{% endif %}>{{ model|title }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if form %}
+        <h2>{{ selected_model|title }}</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="model" value="{{ selected_model }}">
+            <button type="submit">Save</button>
+        </form>
+    {% endif %}
+</body>
+</html>

@@ -1,12 +1,13 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
+from django.http import HttpResponseBadRequest
 from rest_framework import viewsets
 from rest_framework.permissions import BasePermission
 from rest_framework.authentication import TokenAuthentication
 from typing import Callable
 
 
-from .forms import LoginForm
+from .forms import *
 from .models import Strains, StrainProcessing, SubstanceIdentification, Experiments, CultivationPlanning, Projects, Cultures
 from .serializers import StrainsSerializer, StrainProcessingSerializer, SubstanceIdentificationSerializer, ExperimentsSerializer, CultivationPlanningSerializer, ProjectsSerializer, CulturesSerializer
 
@@ -84,3 +85,39 @@ def login_view(request):
         'error_message': error_message,
     }
     return render(request, 'login.html', context)
+
+def create_all(request):
+    model_forms = {
+        'strains': StrainsForm,
+        'strain_processing': StrainProcessingForm,
+        'substance_identification': SubstanceIdentificationForm,
+        'experiments': ExperimentsForm,
+        'cultivation_planning': CultivationPlanningForm,
+        'projects': ProjectsForm,
+        'cultures': CulturesForm,
+    }
+
+    if request.method == 'POST':
+        selected_model = request.POST.get('model')
+        if selected_model not in model_forms:
+            return HttpResponseBadRequest("Invalid model selected")
+
+        form_class = model_forms[selected_model]
+        form = form_class(request.POST, prefix=selected_model)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+
+    else:
+        selected_model = request.GET.get('model')
+        if selected_model in model_forms:
+            form_class = model_forms[selected_model]
+            form = form_class(prefix=selected_model)
+        else:
+            form = None
+
+    return render(request, 'create_all.html', {
+        'form': form,
+        'model_forms': model_forms.keys(),
+        'selected_model': selected_model
+    })
