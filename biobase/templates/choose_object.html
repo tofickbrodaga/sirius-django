@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Choose Object to Edit</title>
+</head>
+<body>
+    <h1>Choose Object to Edit from {{ model_name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="object_id">Select Object:</label>
+        <select name="object_id" id="object_id">
+            {% for obj in objects %}
+                <option value="{{ obj.id }}">{{ obj }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Edit</button>
+    </form>
+    <a href="{% url 'choose_model' %}">Choose another model</a>
+</body>
+</html>

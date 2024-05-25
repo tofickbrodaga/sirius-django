@@ -81,7 +81,7 @@
                 <div class="scrollable">
                     <ul>
                         {% for strain in strains %}
-                            <li><button class="open-modal" data-content="{{ strain.name }}">Стамм: {{ strain.name }}</button></li>
+                            <li><button class="open-modal" data-content="{{ strain.name }}">Штамм: {{ strain.name }}</button></li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -152,7 +152,9 @@
         </div>
         <div style="width: 228px; height: 52px; left: 116px; top: 838px; position: absolute">
             <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
-            <div style="left: 63px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px; font-family: Open Sans Semibold; font-weight: 600; word-wrap: break-word">Изменить</div>
+            <div style="left: 73px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px; font-family: 'Open Sans Semibold'; font-weight: 600; word-wrap: break-word">
+                <a href="{% url 'choose_model' %}" style="color: white; text-decoration: none;">Изменить</a>
+            </div>
         </div>
         <div style="width: 228px; height: 52px; left: 116px; top: 218px; position: absolute">
             <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>

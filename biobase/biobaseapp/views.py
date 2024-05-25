@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest
 from rest_framework import viewsets
 from rest_framework.permissions import BasePermission
@@ -120,4 +120,73 @@ def create_all(request):
         'form': form,
         'model_forms': model_forms.keys(),
         'selected_model': selected_model
+    })
+MODEL_FORMS = {
+    'CustomUser': CustomUser,
+    'Strains': StrainsForm,
+    'StrainProcessing': StrainProcessingForm,
+    'SubstanceIdentification': SubstanceIdentificationForm,
+    'Experiments': ExperimentsForm,
+    'CultivationPlanning': CultivationPlanningForm,
+    'Projects': ProjectsForm,
+    'Cultures': CulturesForm,
+}
+
+MODEL_CLASSES = {
+    'CustomUser': CustomUser,
+    'Strains': Strains,
+    'StrainProcessing': StrainProcessing,
+    'SubstanceIdentification': SubstanceIdentification,
+    'Experiments': Experiments,
+    'CultivationPlanning': CultivationPlanning,
+    'Projects': Projects,
+    'Cultures': Cultures,
+}
+
+def choose_model(request):
+    if request.method == 'POST':
+        model_name = request.POST.get('model')
+        if model_name:
+            return redirect('choose_object', model_name=model_name)
+    return render(request, 'choose_model.html', {
+        'models': MODEL_FORMS.keys()
+    })
+
+def choose_object(request, model_name):
+    model_class = MODEL_CLASSES.get(model_name)
+    if not model_class:
+        return redirect('choose_model')
+
+    objects = model_class.objects.all()
+    if request.method == 'POST':
+        object_id = request.POST.get('object_id')
+        if object_id:
+            return redirect('edit_model', model_name=model_name, object_id=object_id)
+
+    return render(request, 'choose_object.html', {
+        'model_name': model_name,
+        'objects': objects,
+    })
+
+def edit_model(request, model_name, object_id):
+    form_class = MODEL_FORMS.get(model_name)
+    model_class = MODEL_CLASSES.get(model_name)
+
+    if not form_class or not model_class:
+        return redirect('choose_model')
+
+    obj = get_object_or_404(model_class, id=object_id)
+
+    if request.method == 'POST':
+        form = form_class(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            return redirect('edit_model', model_name=model_name, object_id=object_id)  # Редирект на ту же страницу после сохранения
+    else:
+        form = form_class(instance=obj)
+
+    return render(request, 'edit_model.html', {
+        'form': form,
+        'model_name': model_name,
+        'object_id': object_id,
     })

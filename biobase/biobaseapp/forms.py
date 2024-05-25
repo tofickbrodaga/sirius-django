@@ -2,6 +2,23 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import *
 from rest_framework.authtoken.models import Token
+from django.forms import modelformset_factory
+
+
+MODEL_CHOICES = [
+    ('CustomUser', 'CustomUser'),
+    ('Strains', 'Strains'),
+    ('StrainProcessing', 'StrainProcessing'),
+    ('SubstanceIdentification', 'SubstanceIdentification'),
+    ('Experiments', 'Experiments'),
+    ('CultivationPlanning', 'CultivationPlanning'),
+    ('Projects', 'Projects'),
+    ('Cultures', 'Cultures'),
+]
+
+class ModelSelectionForm(forms.Form):
+    model = forms.ChoiceField(choices=MODEL_CHOICES)
+    object_id = forms.CharField(max_length=100)
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -13,7 +30,7 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email')
+        fields = ('first_name', 'last_name', 'email')
 
 
 class LoginForm(forms.Form):
@@ -74,3 +91,11 @@ class CulturesForm(forms.ModelForm):
         model = Cultures
         fields = ['project_id', 'planning_date', 'results', 'created_by']
 
+CustomUserFormSet = modelformset_factory(CustomUser, form=CustomUserChangeForm, extra=0)
+StrainsFormSet = modelformset_factory(Strains, form=StrainsForm, extra=0)
+StrainProcessingFormSet = modelformset_factory(StrainProcessing, form=StrainProcessingForm, extra=0)
+SubstanceIdentificationFormSet = modelformset_factory(SubstanceIdentification, form=SubstanceIdentificationForm, extra=0)
+ExperimentsFormSet = modelformset_factory(Experiments, form=ExperimentsForm, extra=0)
+CultivationPlanningFormSet = modelformset_factory(CultivationPlanning, form=CultivationPlanningForm, extra=0)
+ProjectsFormSet = modelformset_factory(Projects, form=ProjectsForm, extra=0)
+CulturesFormSet = modelformset_factory(Cultures, form=CulturesForm, extra=0)
