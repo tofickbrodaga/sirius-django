@@ -45,15 +45,20 @@ CultivationViewSet = create_viewset(CultivationPlanning, CultivationPlanningSeri
 ProjectsViewSet = create_viewset(Projects, ProjectsSerializer)
 CulturesViewSet = create_viewset(Cultures, CulturesSerializer)
 
-
-def home_page(request):
-    data = {
-        'message': 'Добро пожаловать на домашнюю страницу!'
-    }
-    context = {
-        'data': data
-    }
-    return render(request, 'index.html', context)
+def main_menu(request):
+    user = request.user
+    strains = Strains.objects.filter(created_by=user)
+    plans = CultivationPlanning.objects.filter(started_by=user)
+    identifications = SubstanceIdentification.objects.filter(identified_by=user)
+    experiments = Experiments.objects.filter(created_by=user)
+    projects = Projects.objects.filter(created_by=user)
+    return render(request, 'index.html', {
+        'strains': strains,
+        'plans': plans,
+        'identifications': identifications,
+        'experiments': experiments,
+        'projects': projects,
+    })
 
 
 def login_view(request):
