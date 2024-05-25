@@ -1,9 +1,10 @@
+import datetime
+import uuid
+
+from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-import uuid
-from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
-import datetime
 
 
 def validate_date_not_in_future(value):

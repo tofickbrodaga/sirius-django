@@ -1,9 +1,9 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import *
-from rest_framework.authtoken.models import Token
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.forms import modelformset_factory
+from rest_framework.authtoken.models import Token
 
+from .models import *
 
 MODEL_CHOICES = [
     ('CustomUser', 'CustomUser'),

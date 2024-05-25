@@ -1,15 +1,19 @@
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseBadRequest
-from rest_framework import viewsets
-from rest_framework.permissions import BasePermission
-from rest_framework.authentication import TokenAuthentication
 from typing import Callable
 
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404, redirect, render
+from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import BasePermission
 
 from .forms import *
-from .models import Strains, StrainProcessing, SubstanceIdentification, Experiments, CultivationPlanning, Projects, Cultures
-from .serializers import StrainsSerializer, StrainProcessingSerializer, SubstanceIdentificationSerializer, ExperimentsSerializer, CultivationPlanningSerializer, ProjectsSerializer, CulturesSerializer
+from .models import (CultivationPlanning, Cultures, Experiments, Projects,
+                     StrainProcessing, Strains, SubstanceIdentification)
+from .serializers import (CultivationPlanningSerializer, CulturesSerializer,
+                          ExperimentsSerializer, ProjectsSerializer,
+                          StrainProcessingSerializer, StrainsSerializer,
+                          SubstanceIdentificationSerializer)
 
 safe_methods = 'GET', 'HEAD', 'OPTIONS'
 unsafe_methods = 'POST', 'DELETE', 'PUT'
@@ -121,8 +125,9 @@ def create_all(request):
         'model_forms': model_forms.keys(),
         'selected_model': selected_model
     })
+
+
 MODEL_FORMS = {
-    'CustomUser': CustomUser,
     'Strains': StrainsForm,
     'StrainProcessing': StrainProcessingForm,
     'SubstanceIdentification': SubstanceIdentificationForm,
@@ -133,7 +138,6 @@ MODEL_FORMS = {
 }
 
 MODEL_CLASSES = {
-    'CustomUser': CustomUser,
     'Strains': Strains,
     'StrainProcessing': StrainProcessing,
     'SubstanceIdentification': SubstanceIdentification,
