@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Experiments List</title>
+</head>
+<body>
+    <h1>Experiments List</h1>
+    <form method="GET">
+        <select name="search_type">
+            <option value="name" {% if request.GET.search_type == "name" %}selected{% endif %}>Search by Name</option>
+            <option value="date" {% if request.GET.search_type == "date" %}selected{% endif %}>Search by Date</option>
+            <option value="responsible" {% if request.GET.search_type == "responsible" %}selected{% endif %}>Search by Responsible</option>
+        </select>
+        
+        <div id="search_name" {% if request.GET.search_type != "name" %}style="display:none"{% endif %}>
+            <input type="text" name="q" placeholder="Search by name" value="{{ request.GET.q }}">
+        </div>
+        
+        <div id="search_date" {% if request.GET.search_type != "date" %}style="display:none"{% endif %}>
+            <input type="date" name="date_from" placeholder="From" value="{{ request.GET.date_from }}">
+            <input type="date" name="date_to" placeholder="To" value="{{ request.GET.date_to }}">
+        </div>
+        
+        <div id="search_responsible" {% if request.GET.search_type != "responsible" %}style="display:none"{% endif %}>
+            <input type="text" name="responsible" placeholder="Responsible" value="{{ request.GET.responsible }}">
+        </div>
+        
+        <button type="submit">Search</button>
+    </form>
+    <ul>
+        {% for experiment in experiments %}
+            <li>
+                <strong>Strain UIN:</strong> {{ experiment.strain_UIN.name }}<br>
+                <strong>Start Date:</strong> {{ experiment.start_date }}<br>
+                <strong>End Date:</strong> {{ experiment.end_date }}<br>
+                <strong>Created by:</strong> {{ experiment.created_by.username }}
+            </li>
+        {% endfor %}
+    </ul>
+    <div>
+        {% if experiments.has_previous %}
+            <a href="?page={{ experiments.previous_page_number }}{% if request.GET.search_type %}&search_type={{ request.GET.search_type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.responsible %}&responsible={{ request.GET.responsible }}{% endif %}">Previous</a>
+        {% endif %}
+        
+        <span>Page {{ experiments.number }} of {{ experiments.paginator.num_pages }}</span>
+        
+        {% if experiments.has_next %}
+            <a href="?page={{ experiments.next_page_number }}{% if request.GET.search_type %}&search_type={{ request.GET.search_type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.responsible %}&responsible={{ request.GET.responsible }}{% endif %}">Next</a>
+        {% endif %}
+    </div>
+    
+    <script>
+        document.querySelector('select[name="search_type"]').addEventListener('change', function() {
+            document.getElementById('search_name').style.display = this.value == 'name' ? 'block' : 'none';
+            document.getElementById('search_date').style.display = this.value == 'date' ? 'block' : 'none';
+            document.getElementById('search_responsible').style.display = this.value == 'responsible' ? 'block' : 'none';
+        });
+    </script>
+</body>
+</html>

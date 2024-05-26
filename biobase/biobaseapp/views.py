@@ -3,6 +3,7 @@ from typing import Callable
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import ListView
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import BasePermission
@@ -25,6 +26,7 @@ def check_auth(view: Callable) -> Callable:
         return view(request)
     return new_view
 
+
 class MyPermission(BasePermission):
      def has_permission(self, request, _):
          if request.method in safe_methods:
@@ -32,6 +34,7 @@ class MyPermission(BasePermission):
          elif request.method in unsafe_methods:
              return bool(request.user and request.user.is_superuser)
          return False
+
 
 def create_viewset(model_class, serializer):
      class ViewSet(viewsets.ModelViewSet):
@@ -42,6 +45,7 @@ def create_viewset(model_class, serializer):
 
      return ViewSet
 
+
 StrainViewSet = create_viewset(Strains, StrainsSerializer)
 StrainProcessingViewSet = create_viewset(StrainProcessing, StrainProcessingSerializer)
 SubstanceViewSet = create_viewset(SubstanceIdentification, SubstanceIdentificationSerializer)
@@ -49,6 +53,79 @@ ExperimentsViewSet = create_viewset(Experiments, ExperimentsSerializer)
 CultivationViewSet = create_viewset(CultivationPlanning, CultivationPlanningSerializer)
 ProjectsViewSet = create_viewset(Projects, ProjectsSerializer)
 CulturesViewSet = create_viewset(Cultures, CulturesSerializer)
+
+
+class StrainsListView(ListView):
+    model = Strains
+    template_name = 'strains_list.html'
+    context_object_name = 'strains'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_type = self.request.GET.get('search_type')
+        query = self.request.GET.get('q')
+        date_from = self.request.GET.get('date_from')
+        date_to = self.request.GET.get('date_to')
+        responsible = self.request.GET.get('responsible')
+        
+        if search_type == 'name' and query:
+            queryset = queryset.filter(name__icontains=query)
+        elif search_type == 'date' and date_from and date_to:
+            queryset = queryset.filter(creation_date__range=[date_from, date_to])
+        elif search_type == 'responsible' and responsible:
+            queryset = queryset.filter(created_by__username__icontains=responsible)
+            
+        return queryset
+
+
+class CultivationPlanningListView(ListView):
+    model = CultivationPlanning
+    template_name = 'planning_list.html'
+    context_object_name = 'plannings'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_type = self.request.GET.get('search_type')
+        query = self.request.GET.get('q')
+        date_from = self.request.GET.get('date_from')
+        date_to = self.request.GET.get('date_to')
+        responsible = self.request.GET.get('responsible')
+        
+        if search_type == 'name' and query:
+            queryset = queryset.filter(strain_ID__name__icontains=query)
+        elif search_type == 'date' and date_from and date_to:
+            queryset = queryset.filter(planning_date__range=[date_from, date_to])
+        elif search_type == 'responsible' and responsible:
+            queryset = queryset.filter(started_by__username__icontains=responsible)
+            
+        return queryset
+
+
+class ExperimentsListView(ListView):
+    model = Experiments
+    template_name = 'experiments_list.html'
+    context_object_name = 'experiments'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_type = self.request.GET.get('search_type')
+        query = self.request.GET.get('q')
+        date_from = self.request.GET.get('date_from')
+        date_to = self.request.GET.get('date_to')
+        responsible = self.request.GET.get('responsible')
+        
+        if search_type == 'name' and query:
+            queryset = queryset.filter(strain_UIN__name__icontains=query)
+        elif search_type == 'date' and date_from and date_to:
+            queryset = queryset.filter(start_date__range=[date_from, date_to])
+        elif search_type == 'responsible' and responsible:
+            queryset = queryset.filter(created_by__username__icontains=responsible)
+            
+        return queryset
+
 
 def main_menu(request):
     user = request.user
