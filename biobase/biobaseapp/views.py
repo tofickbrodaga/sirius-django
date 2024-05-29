@@ -62,7 +62,7 @@ class StrainsListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().order_by('id')  # Добавлено упорядочение
         search_type = self.request.GET.get('search_type')
         query = self.request.GET.get('q')
         date_from = self.request.GET.get('date_from')
@@ -86,7 +86,7 @@ class CultivationPlanningListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().order_by('id')  # Добавлено упорядочение
         search_type = self.request.GET.get('search_type')
         query = self.request.GET.get('q')
         date_from = self.request.GET.get('date_from')
@@ -110,7 +110,7 @@ class ExperimentsListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().order_by('id')  # Добавлено упорядочение
         search_type = self.request.GET.get('search_type')
         query = self.request.GET.get('q')
         date_from = self.request.GET.get('date_from')
@@ -248,6 +248,7 @@ def choose_object(request, model_name):
         'model_name': model_name,
         'objects': objects,
     })
+
 
 def edit_model(request, model_name, object_id):
     form_class = MODEL_FORMS.get(model_name)
