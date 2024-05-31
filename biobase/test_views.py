@@ -1,10 +1,102 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from biobaseapp.models import Strains
+from biobaseapp.models import Strains, Projects, CultivationPlanning, SubstanceIdentification, Experiments
 from django.utils import timezone
 
 User = get_user_model()
+
+class MainMenuViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='password')
+        self.client.login(username='testuser', password='password')
+        self.strain = Strains.objects.create(
+            UIN="UIN12345",
+            name="Test Strain",
+            pedigree="Pedigree info",
+            mutations="Mutations info",
+            transformations="Transformations info",
+            creation_date='2024-01-01',
+            created_by=self.user
+        )
+        self.plan = CultivationPlanning.objects.create(
+            strain_ID=self.strain,
+            planning_date='2024-01-01',
+            completion_date='2024-01-10',
+            growth_medium="Medium info",
+            status="Planned",
+            started_by=self.user
+        )
+        self.identification = SubstanceIdentification.objects.create(
+            strain_id=self.strain,
+            identification_date='2024-01-01',
+            results="Identification results",
+            identified_by=self.user
+        )
+        self.experiment = Experiments.objects.create(
+            strain_UIN=self.strain,
+            start_date='2024-01-01',
+            end_date='2024-01-10',
+            growth_medium="Growth medium info",
+            results="Experiment results",
+            created_by=self.user
+        )
+        self.project = Projects.objects.create(
+            project_name="Test Project",
+            start_date='2024-01-01',
+            end_date='2024-01-10',
+            results="Project results",
+            created_by=self.user
+        )
+
+    def test_main_menu_view(self):
+        response = self.client.get(reverse('index'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'index.html')
+        self.assertContains(response, "Test Strain")
+        self.assertContains(response, "Planned")
+        self.assertContains(response, "Identification results")
+        self.assertContains(response, "Experiment results")
+        self.assertContains(response, "Test Project")
+
+
+class LoginViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='password')
+
+    def test_login_view_get(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'login.html')
+
+    def test_login_view_post_valid(self):
+        response = self.client.post(reverse('login'), {
+            'username': 'testuser',
+            'password': 'password'
+        })
+        self.assertEqual(response.status_code, 302)  # Redirect after success
+        self.assertRedirects(response, reverse('index'))
+
+    def test_login_view_post_invalid_credentials(self):
+        response = self.client.post(reverse('login'), {
+            'username': 'testuser',
+            'password': 'wrongpassword'
+        })
+        self.assertEqual(response.status_code, 200)  # Form errors should not redirect
+        self.assertTemplateUsed(response, 'login.html')
+        self.assertContains(response, 'Форма неверно заполнена.')
+
+    def test_login_view_post_invalid_form(self):
+        response = self.client.post(reverse('login'), {
+            'username': '',
+            'password': ''
+        })
+        self.assertEqual(response.status_code, 200)  # Form errors should not redirect
+        self.assertTemplateUsed(response, 'login.html')
+        self.assertContains(response, 'Форма неверно заполнена.')
+
 
 class ViewTests(TestCase):
     def setUp(self):

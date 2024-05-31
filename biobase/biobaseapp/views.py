@@ -142,7 +142,6 @@ def main_menu(request):
         'projects': projects,
     })
 
-
 def login_view(request):
     error_message = None
 
@@ -154,18 +153,17 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 return redirect('index')
-            else:
-                error_message = 'Неверный логин или пароль.'
         else:
             error_message = 'Форма неверно заполнена.'
     else:
         form = LoginForm()
-    
+
     context = {
         'form': form,
         'error_message': error_message,
     }
     return render(request, 'login.html', context)
+
 
 def create_all(request):
     model_forms = {

@@ -11,8 +11,8 @@
     <div class="inner-container">
       <div class="box"></div>
       <div class="content">
-        {% if form.errors %}
-          <p class="error-message">Your username and password didn't match. Please try again.</p>
+        {% if error_message %}
+          <p class="error-message">{{ error_message }}</p>
         {% endif %}
         {% if next %}
           {% if user.is_authenticated %}
