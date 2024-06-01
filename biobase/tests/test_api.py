@@ -1,9 +1,10 @@
-from rest_framework.test import APIClient, APITestCase
+from django.contrib.auth import get_user_model
+from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from django.contrib.auth import get_user_model
-from biobaseapp.models import Strains, Projects
-from django.utils.timezone import now
+from rest_framework.test import APIClient, APITestCase
+
+from biobaseapp.models import Projects, Strains
 
 CustomUser = get_user_model()
 

@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from biobaseapp.views import login_view, home_page, StrainViewSet, StrainProcessingViewSet, SubstanceViewSet, ExperimentsViewSet, CultivationViewSet, ProjectsViewSet, CulturesViewSet
+from biobaseapp.views import login_view, main_menu, create_all, edit_model, choose_model, choose_object, StrainViewSet, StrainProcessingViewSet, SubstanceViewSet, ExperimentsViewSet, CultivationViewSet, ProjectsViewSet, CulturesViewSet, StrainsListView, CultivationPlanningListView, ExperimentsListView
 
 from rest_framework.routers import DefaultRouter
 
@@ -32,7 +32,14 @@ router.register(r'cultures', CulturesViewSet)
 urlpatterns = [
     path('', login_view, name='login'),
     path('admin/', admin.site.urls),
-    path('home/', home_page, name='index'),
+    path('home/', main_menu, name='index'),
     path('api/', include(router.urls), name='api'),
+    path('create_all/', create_all, name='create_all'),
+    path('choose_model/', choose_model, name='choose_model'),
+    path('strains/', StrainsListView.as_view(), name='strains_list'),
+    path('planning/', CultivationPlanningListView.as_view(), name='planning_list'),
+    path('experiments/', ExperimentsListView.as_view(), name='experiments_list'),
+    path('choose_object/<str:model_name>/', choose_object, name='choose_object'),
+    path('edit_model/<str:model_name>/<uuid:object_id>/', edit_model, name='edit_model'),
 ]
 

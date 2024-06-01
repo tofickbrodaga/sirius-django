@@ -1,5 +1,9 @@
 from rest_framework import serializers
-from .models import CustomUser, Strains, StrainProcessing, SubstanceIdentification, Experiments, CultivationPlanning, Projects, Cultures
+
+from .models import (CultivationPlanning, Cultures, CustomUser, Experiments,
+                     Projects, StrainProcessing, Strains,
+                     SubstanceIdentification)
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:

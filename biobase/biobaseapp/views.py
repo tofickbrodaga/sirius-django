@@ -1,14 +1,20 @@
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
-from rest_framework import viewsets
-from rest_framework.permissions import BasePermission
-from rest_framework.authentication import TokenAuthentication
 from typing import Callable
 
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic import ListView
+from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import BasePermission
 
-from .forms import LoginForm
-from .models import Strains, StrainProcessing, SubstanceIdentification, Experiments, CultivationPlanning, Projects, Cultures
-from .serializers import StrainsSerializer, StrainProcessingSerializer, SubstanceIdentificationSerializer, ExperimentsSerializer, CultivationPlanningSerializer, ProjectsSerializer, CulturesSerializer
+from .forms import *
+from .models import (CultivationPlanning, Cultures, Experiments, Projects,
+                     StrainProcessing, Strains, SubstanceIdentification)
+from .serializers import (CultivationPlanningSerializer, CulturesSerializer,
+                          ExperimentsSerializer, ProjectsSerializer,
+                          StrainProcessingSerializer, StrainsSerializer,
+                          SubstanceIdentificationSerializer)
 
 safe_methods = 'GET', 'HEAD', 'OPTIONS'
 unsafe_methods = 'POST', 'DELETE', 'PUT'
@@ -20,6 +26,7 @@ def check_auth(view: Callable) -> Callable:
         return view(request)
     return new_view
 
+
 class MyPermission(BasePermission):
      def has_permission(self, request, _):
          if request.method in safe_methods:
@@ -27,6 +34,7 @@ class MyPermission(BasePermission):
          elif request.method in unsafe_methods:
              return bool(request.user and request.user.is_superuser)
          return False
+
 
 def create_viewset(model_class, serializer):
      class ViewSet(viewsets.ModelViewSet):
@@ -37,6 +45,7 @@ def create_viewset(model_class, serializer):
 
      return ViewSet
 
+
 StrainViewSet = create_viewset(Strains, StrainsSerializer)
 StrainProcessingViewSet = create_viewset(StrainProcessing, StrainProcessingSerializer)
 SubstanceViewSet = create_viewset(SubstanceIdentification, SubstanceIdentificationSerializer)
@@ -46,15 +55,92 @@ ProjectsViewSet = create_viewset(Projects, ProjectsSerializer)
 CulturesViewSet = create_viewset(Cultures, CulturesSerializer)
 
 
-def home_page(request):
-    data = {
-        'message': 'Добро пожаловать на домашнюю страницу!'
-    }
-    context = {
-        'data': data
-    }
-    return render(request, 'index.html', context)
+class StrainsListView(ListView):
+    model = Strains
+    template_name = 'strains_list.html'
+    context_object_name = 'strains'
+    paginate_by = 10
 
+    def get_queryset(self):
+        queryset = super().get_queryset().order_by('id')  # Добавлено упорядочение
+        search_type = self.request.GET.get('search_type')
+        query = self.request.GET.get('q')
+        date_from = self.request.GET.get('date_from')
+        date_to = self.request.GET.get('date_to')
+        responsible = self.request.GET.get('responsible')
+        
+        if search_type == 'name' and query:
+            queryset = queryset.filter(name__icontains=query)
+        elif search_type == 'date' and date_from and date_to:
+            queryset = queryset.filter(creation_date__range=[date_from, date_to])
+        elif search_type == 'responsible' and responsible:
+            queryset = queryset.filter(created_by__username__icontains=responsible)
+            
+        return queryset
+
+
+class CultivationPlanningListView(ListView):
+    model = CultivationPlanning
+    template_name = 'planning_list.html'
+    context_object_name = 'plannings'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset().order_by('id')  # Добавлено упорядочение
+        search_type = self.request.GET.get('search_type')
+        query = self.request.GET.get('q')
+        date_from = self.request.GET.get('date_from')
+        date_to = self.request.GET.get('date_to')
+        responsible = self.request.GET.get('responsible')
+        
+        if search_type == 'name' and query:
+            queryset = queryset.filter(strain_ID__name__icontains=query)
+        elif search_type == 'date' and date_from and date_to:
+            queryset = queryset.filter(planning_date__range=[date_from, date_to])
+        elif search_type == 'responsible' and responsible:
+            queryset = queryset.filter(started_by__username__icontains=responsible)
+            
+        return queryset
+
+
+class ExperimentsListView(ListView):
+    model = Experiments
+    template_name = 'experiments_list.html'
+    context_object_name = 'experiments'
+    paginate_by = 10
+
+    def get_queryset(self):
+        queryset = super().get_queryset().order_by('id')  # Добавлено упорядочение
+        search_type = self.request.GET.get('search_type')
+        query = self.request.GET.get('q')
+        date_from = self.request.GET.get('date_from')
+        date_to = self.request.GET.get('date_to')
+        responsible = self.request.GET.get('responsible')
+        
+        if search_type == 'name' and query:
+            queryset = queryset.filter(strain_UIN__name__icontains=query)
+        elif search_type == 'date' and date_from and date_to:
+            queryset = queryset.filter(start_date__range=[date_from, date_to])
+        elif search_type == 'responsible' and responsible:
+            queryset = queryset.filter(created_by__username__icontains=responsible)
+            
+        return queryset
+
+
+def main_menu(request):
+    user = request.user
+    strains = Strains.objects.filter(created_by=user)
+    plans = CultivationPlanning.objects.filter(started_by=user)
+    identifications = SubstanceIdentification.objects.filter(identified_by=user)
+    experiments = Experiments.objects.filter(created_by=user)
+    projects = Projects.objects.filter(created_by=user)
+    return render(request, 'index.html', {
+        'strains': strains,
+        'plans': plans,
+        'identifications': identifications,
+        'experiments': experiments,
+        'projects': projects,
+    })
 
 def login_view(request):
     error_message = None
@@ -67,15 +153,120 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 return redirect('index')
-            else:
-                error_message = 'Неверный логин или пароль.'
         else:
             error_message = 'Форма неверно заполнена.'
     else:
         form = LoginForm()
-    
+
     context = {
         'form': form,
         'error_message': error_message,
     }
     return render(request, 'login.html', context)
+
+
+def create_all(request):
+    model_forms = {
+        'strains': StrainsForm,
+        'strain_processing': StrainProcessingForm,
+        'substance_identification': SubstanceIdentificationForm,
+        'experiments': ExperimentsForm,
+        'cultivation_planning': CultivationPlanningForm,
+        'projects': ProjectsForm,
+        'cultures': CulturesForm,
+    }
+
+    if request.method == 'POST':
+        selected_model = request.POST.get('model')
+        if selected_model not in model_forms:
+            return HttpResponseBadRequest("Invalid model selected")
+
+        form_class = model_forms[selected_model]
+        form = form_class(request.POST, prefix=selected_model)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+
+    else:
+        selected_model = request.GET.get('model')
+        if selected_model in model_forms:
+            form_class = model_forms[selected_model]
+            form = form_class(prefix=selected_model)
+        else:
+            form = None
+
+    return render(request, 'create_all.html', {
+        'form': form,
+        'model_forms': model_forms.keys(),
+        'selected_model': selected_model
+    })
+
+
+MODEL_FORMS = {
+    'Strains': StrainsForm,
+    'StrainProcessing': StrainProcessingForm,
+    'SubstanceIdentification': SubstanceIdentificationForm,
+    'Experiments': ExperimentsForm,
+    'CultivationPlanning': CultivationPlanningForm,
+    'Projects': ProjectsForm,
+    'Cultures': CulturesForm,
+}
+
+MODEL_CLASSES = {
+    'Strains': Strains,
+    'StrainProcessing': StrainProcessing,
+    'SubstanceIdentification': SubstanceIdentification,
+    'Experiments': Experiments,
+    'CultivationPlanning': CultivationPlanning,
+    'Projects': Projects,
+    'Cultures': Cultures,
+}
+
+def choose_model(request):
+    if request.method == 'POST':
+        model_name = request.POST.get('model')
+        if model_name:
+            return redirect('choose_object', model_name=model_name)
+    return render(request, 'choose_model.html', {
+        'models': MODEL_FORMS.keys()
+    })
+
+def choose_object(request, model_name):
+    model_class = MODEL_CLASSES.get(model_name)
+    if not model_class:
+        return redirect('choose_model')
+
+    objects = model_class.objects.all()
+    if request.method == 'POST':
+        object_id = request.POST.get('object_id')
+        if object_id:
+            return redirect('edit_model', model_name=model_name, object_id=object_id)
+
+    return render(request, 'choose_object.html', {
+        'model_name': model_name,
+        'objects': objects,
+    })
+
+
+def edit_model(request, model_name, object_id):
+    form_class = MODEL_FORMS.get(model_name)
+    model_class = MODEL_CLASSES.get(model_name)
+
+    if not form_class or not model_class:
+        return redirect('choose_model')
+
+    obj = get_object_or_404(model_class, id=object_id)
+
+    if request.method == 'POST':
+        form = form_class(request.POST, instance=obj)
+        if form.is_valid():
+            form.save()
+            return redirect('edit_model', model_name=model_name, object_id=object_id)  # Редирект на ту же страницу после сохранения
+    else:
+        form = form_class(instance=obj)
+
+    return render(request, 'edit_model.html', {
+        'form': form,
+        'model_name': model_name,
+        'object_id': object_id,
+    })

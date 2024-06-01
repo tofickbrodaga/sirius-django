@@ -1,8 +1,11 @@
 from django.contrib import admin
-from .models import CustomUser, Strains, SubstanceIdentification, Projects, StrainProcessing, CultivationPlanning, Projects, Cultures, Experiments
-from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+
+from .forms import CustomUserChangeForm, CustomUserCreationForm
+from .models import (CultivationPlanning, Cultures, CustomUser, Experiments,
+                     Projects, StrainProcessing, Strains,
+                     SubstanceIdentification)
+
 
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
