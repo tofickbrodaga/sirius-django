@@ -76,7 +76,7 @@ class LoginViewTests(TestCase):
             'username': 'testuser',
             'password': 'password'
         })
-        self.assertEqual(response.status_code, 302)  # Redirect after success
+        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('index'))
 
     def test_login_view_post_invalid_credentials(self):
@@ -84,7 +84,7 @@ class LoginViewTests(TestCase):
             'username': 'testuser',
             'password': 'wrongpassword'
         })
-        self.assertEqual(response.status_code, 200)  # Form errors should not redirect
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
         self.assertContains(response, 'Форма неверно заполнена.')
 
@@ -93,7 +93,7 @@ class LoginViewTests(TestCase):
             'username': '',
             'password': ''
         })
-        self.assertEqual(response.status_code, 200)  # Form errors should not redirect
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
         self.assertContains(response, 'Форма неверно заполнена.')
 

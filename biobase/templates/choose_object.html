@@ -2,19 +2,111 @@
 <html>
 <head>
     <title>Choose Object to Edit</title>
+    <style>
+         body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+        }
+        .container {
+            width: 500px;
+            height: 250px;
+            position: relative;
+            background: white;
+            box-shadow: 0px 4px 62.9px rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px;
+        }
+        .title {
+            color: black;
+            font-size: 24px;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .select-container {
+            width: 304px;
+            height: 52px;
+            padding: 8px 16px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid black;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        select {
+            flex: 1;
+            color: #189EA0;
+            font-size: 16px;
+            font-family: 'Gilroy', sans-serif;
+            font-weight: 300;
+            line-height: 24px;
+            border: none;
+            outline: none;
+            appearance: none;
+            background: none;
+        }
+        .edit-button {
+            width: 186px;
+            height: 40px;
+            background: #189EA0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .choose-another {
+            color: black;
+            font-size: 13px;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 600;
+            line-height: 19.5px;
+            text-align: center;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Choose Object to Edit from {{ model_name }}</h1>
-    <form method="post">
-        {% csrf_token %}
-        <label for="object_id">Select Object:</label>
-        <select name="object_id" id="object_id">
-            {% for obj in objects %}
-                <option value="{{ obj.id }}">{{ obj }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Edit</button>
-    </form>
-    <a href="{% url 'choose_model' %}">Choose another model</a>
+    <div class="container">
+        <div class="title">Выберите объект:</div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="select-container">
+                <select name="object_id" id="object_id">
+                    {% for obj in objects %}
+                        <option value="{{ obj.id }}">{{ obj }}</option>
+                    {% endfor %}
+                </select>
+                <div style="width: 24px; height: 24px; position: relative;">
+                   
+                </div>
+            </div>
+            <button type="submit" class="edit-button">Редактировать</button>
+        </form>
+        <a href="{% url 'choose_model' %}" class="choose-another">Выбрать другую модель</a>
+    </div>
 </body>
 </html>

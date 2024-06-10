@@ -1,16 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Edit {{ model_name }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать {{ model_name }}</title>
+    <style>
+        body {
+            font-family: Open Sans, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        form p {
+            margin-bottom: 15px;
+        }
+        .submit-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #189EA0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .submit-button:hover {
+            background-color: #157e7f;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links a {
+            margin-right: 15px;
+            color: #189EA0;
+            text-decoration: none;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Edit {{ model_name }}</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save changes</button>
-    </form>
-    <a href="{% url 'choose_object' model_name=model_name %}">Choose another object</a>
-    <a href="{% url 'choose_model' %}">Choose another model</a>
+    <div class="container">
+        <h1>Редактировать {{ model_name }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="submit-button">Сохранить изменения</button>
+        </form>
+        <div class="links">
+            <a href="{% url 'choose_object' model_name=model_name %}">Выбрать другой объект</a>
+            <a href="{% url 'choose_model' %}">Выбрать другую модель</a>
+        </div>
+    </div>
 </body>
 </html>

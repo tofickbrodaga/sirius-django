@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from biobaseapp.views import login_view, main_menu, create_all, edit_model, choose_model, choose_object, StrainViewSet, StrainProcessingViewSet, SubstanceViewSet, ExperimentsViewSet, CultivationViewSet, ProjectsViewSet, CulturesViewSet, StrainsListView, CultivationPlanningListView, ExperimentsListView
+from biobaseapp.views import login_view, logout_view, main_menu, create_all, edit_model, choose_model, choose_object, StrainViewSet, StrainProcessingViewSet, SubstanceViewSet, ExperimentsViewSet, CultivationViewSet, ProjectsViewSet, CulturesViewSet, StrainsListView, CultivationPlanningListView, ExperimentsListView
 
 from rest_framework.routers import DefaultRouter
 
@@ -41,5 +41,6 @@ urlpatterns = [
     path('experiments/', ExperimentsListView.as_view(), name='experiments_list'),
     path('choose_object/<str:model_name>/', choose_object, name='choose_object'),
     path('edit_model/<str:model_name>/<uuid:object_id>/', edit_model, name='edit_model'),
+     path('logout/', logout_view, name='logout'),
 ]
 

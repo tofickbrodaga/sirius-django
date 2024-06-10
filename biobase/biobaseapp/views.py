@@ -7,6 +7,7 @@ from django.views.generic import ListView
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import BasePermission
+from django.contrib.auth import logout
 
 from .forms import *
 from .models import (CultivationPlanning, Cultures, Experiments, Projects,
@@ -140,6 +141,7 @@ def main_menu(request):
         'identifications': identifications,
         'experiments': experiments,
         'projects': projects,
+        'user': user
     })
 
 def login_view(request):
@@ -163,6 +165,10 @@ def login_view(request):
         'error_message': error_message,
     }
     return render(request, 'login.html', context)
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 
 def create_all(request):
