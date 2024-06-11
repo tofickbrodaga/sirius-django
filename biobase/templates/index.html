@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главное меню</title>
     <style>
+        body {
+            font-family: 'Open Sans Semibold', sans-serif;
+        }
         .modal {
             display: none; 
             position: fixed; 
@@ -61,7 +64,7 @@
             background-color: #189EA0;
             color: white;
             font-size: 16px;
-            font-family: Open Sans, sans-serif;
+            font-family: Open Sans Semibold, sans-serif;;
             border-radius: 5px;
             cursor: pointer;
             text-align: left;
@@ -76,7 +79,7 @@
         <div style="width: 1440px; height: 927px; left: 60px; top: 49px; position: absolute; background: white; box-shadow: 0px 4px 63px rgba(0, 0, 0, 0.25); border-radius: 20px"></div>
         
         <div style="width: 239px; left: 470px; top: 244px; position: absolute">
-            <div style="left: 1px; top: 0px; position: absolute; text-align: right; color: black; font-size: 32px; font-family: Open Sans Semibold; font-weight: 600; word-wrap: break-word">Мои штаммы</div>
+            <div style="left: 1px; top: 0px; position: absolute; text-align: right; color: black; font-size: 32px; font-family: 'Open Sans Semibold', sans-serif; font-weight: 500; word-wrap: break-word">Мои штаммы</div>
             <div style="width: 239px; height: 286px; left: 0px; top: 53px; position: absolute; background: #FCFFFF; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25); border-radius: 20px; border-left: 5px #189EA0 solid">
                 <div class="scrollable">
                     <ul>
@@ -89,7 +92,7 @@
         </div>
         
         <div style="width: 243px; left: 743px; top: 244px; position: absolute">
-            <div style="left: 0px; top: 0px; position: absolute; text-align: right; color: black; font-size: 32px; font-family: Open Sans Semibold; font-weight: 600; word-wrap: break-word">Планирование</div>
+            <div style="left: 1px; top: 0px; position: absolute; text-align: right; color: black; font-size: 32px; font-family: 'Open Sans Semibold', sans-serif; font-weight: 500; word-wrap: break-word">Планирование</div>
             <div style="width: 239px; height: 286px; left: 4px; top: 53px; position: absolute; background: #FCFFFF; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25); border-radius: 20px; border-left: 5px #189EA0 solid">
                 <div class="scrollable">
                     <ul>
@@ -102,7 +105,7 @@
         </div>
         
         <div style="width: 267px; left: 733px; top: 601px; position: absolute">
-            <div style="left: 0px; top: 0px; position: absolute; text-align: right; color: black; font-size: 32px; font-family: Open Sans Semibold; font-weight: 600; word-wrap: break-word">Идентификация</div>
+            <div style="left: 1px; top: 0px; position: absolute; text-align: right; color: black; font-size: 32px; font-family: 'Open Sans Semibold', sans-serif; font-weight: 500; word-wrap: break-word">Идентификация</div>
             <div style="width: 239px; height: 286px; left: 14px; top: 53px; position: absolute; background: #FCFFFF; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25); border-radius: 20px; border-left: 5px #189EA0 solid">
                 <div class="scrollable">
                     <ul>
@@ -115,105 +118,107 @@
         </div>
         
         <div style="width: 242px; left: 1023px; top: 601px; position: absolute">
-            <div style="left: 0px; top: 0px; position: absolute; text-align: right; color: black; font-size: 32px; font-family: Open Sans Semibold; font-weight: 600; word-wrap: break-word">Эксперименты</div>
+            <div style="left: 1px; top: 0px; position: absolute; text-align: right; color: black; font-size: 32px; font-family: 'Open Sans Semibold', sans-serif; font-weight: 500; word-wrap: break-word">Эксперименты</div>
             <div style="width: 239px; height: 286px; left: 1px; top: 53px; position: absolute; background: #FCFFFF; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25); border-radius: 20px; border-left: 5px #189EA0 solid">
                 <div class="scrollable">
                     <ul>
                         {% for experiment in experiments %}
                             <li><button class="open-modal" data-content="{{ experiment.results }}">Эксперимент: {{ experiment.results }}</button></li>
                         {% endfor %}
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div style="width: 239px; height: 339px; left: 471px; top: 601px; position: absolute">
-            <div style="left: 4px; top: 0px; position: absolute; text-align: right; color: black; font-size: 32px; font-family: Open Sans Semibold; font-weight: 600; word-wrap: break-word">Мои проекты</div>
-            <div style="width: 239px; height: 286px; left: 0px; top: 53px; position: absolute; background: #FCFFFF; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25); border-radius: 20px; border-left: 5px #189EA0 solid">
-                <div class="scrollable">
-                    <ul>
-                        {% for project in projects %}
-                            <li><button class="open-modal" data-content="{{ project.project_name }}">Проект: {{ project.project_name }}</button></li>
-                        {% endfor %}
-                    </ul>
+            
+            <div style="width: 239px; height: 339px; left: 471px; top: 601px; position: absolute">
+                <div style="left: 1px; top: 0px; position: absolute; text-align: right; color: black; font-size: 32px; font-family: 'Open Sans Semibold', sans-serif; font-weight: 500; word-wrap: break-word">Мои проекты</div>
+                <div style="width: 239px; height: 286px; left: 0px; top: 53px; position: absolute; background: #FCFFFF; box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25); border-radius: 20px; border-left: 5px #189EA0 solid">
+                    <div class="scrollable">
+                        <ul>
+                            {% for project in projects %}
+                                <li><button class="open-modal" data-content="{{ project.project_name }}">Проект: {{ project.project_name }}</button></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div style="width: 228px; height: 52px; left: 116px; top: 153px; position: absolute">
-            <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
-            <div style="left: 40px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px; font-family: Open Sans Semibold; font-weight: 600; word-wrap: break-word">
-                <a href="{% url 'strains_list' %}" style="color: white; text-decoration: none;">База штаммов</a>
+            
+            <div style="width: 228px; height: 52px; left: 116px; top: 153px; position: absolute">
+                <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
+                <div style="left: 40px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px; font-family: 'Open Sans Semibold', sans-serif; font-weight: 600; word-wrap: break-word;">
+                    <a href="{% url 'strains_list' %}" style="color: white; text-decoration: none;">База штаммов</a>
+                </div>                             
             </div>
-        </div>
-        <div style="width: 228px; height: 52px; left: 116px; top: 773px; position: absolute">
-            <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
-            <div style="left: 73px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px; font-family: 'Open Sans Semibold'; font-weight: 600; word-wrap: break-word">
-                <a href="{% url 'create_all' %}" style="color: white; text-decoration: none;">Создать</a>
+            <div style="width: 228px; height: 52px; left: 116px; top: 773px; position: absolute">
+                <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
+                <div style="left: 73px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px;  font-family: 'Open Sans Semibold', sans-serif; font-weight: 600; word-wrap: break-word">
+                    <a href="{% url 'create_all' %}" style="color: white; text-decoration: none;  font-family: 'Open Sans Semibold', sans-serif;">Создать</a>
+                </div>
             </div>
-        </div>
-        <div style="width: 228px; height: 52px; left: 116px; top: 838px; position: absolute">
-            <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
-            <div style="left: 73px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px; font-family: 'Open Sans Semibold'; font-weight: 600; word-wrap: break-word">
-                <a href="{% url 'choose_model' %}" style="color: white; text-decoration: none;">Изменить</a>
+            <div style="width: 228px; height: 52px; left: 116px; top: 838px; position: absolute">
+                <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
+                <div style="left: 73px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px;  font-family: 'Open Sans Semibold', sans-serif; font-weight: 600; word-wrap: break-word">
+                    <a href="{% url 'choose_model' %}" style="color: white; text-decoration: none;">Изменить</a>
+                </div>
             </div>
-        </div>
-        <div style="width: 228px; height: 52px; left: 116px; top: 218px; position: absolute">
-            <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
-            <div style="left: 14px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px; font-family: Open Sans Semibold; font-weight: 600; word-wrap: break-word">
-            <a href="{% url 'planning_list' %}" style="color: white; text-decoration: none;">База планирования</a>
+            <div style="width: 228px; height: 52px; left: 116px; top: 218px; position: absolute">
+                <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
+                <div style="left: 14px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px; font-family: 'Open Sans Semibold', sans-serif; font-weight: 600; word-wrap: break-word">
+                <a href="{% url 'planning_list' %}" style="color: white; text-decoration: none;">База планирования</a>
+                </div>
             </div>
-        </div>
-        <div style="width: 228px; height: 52px; left: 116px; top: 283px; position: absolute">
-            <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
-            <div style="left: 10px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px; font-family: Open Sans Semibold; font-weight: 600; word-wrap: break-word">
-             <a href="{% url 'experiments_list' %}" style="color: white; text-decoration: none;">База экспериментов</a>
+            <div style="width: 228px; height: 52px; left: 116px; top: 283px; position: absolute">
+                <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
+                <div style="left: 10px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px;  font-family: 'Open Sans Semibold', sans-serif; font-weight: 600; word-wrap: break-word">
+                 <a href="{% url 'experiments_list' %}" style="color: white; text-decoration: none;">База экспериментов</a>
+                </div>
             </div>
-        </div>
-        
-        <div style="width: 202px; height: 79px; left: 1122px; top: 473px; position: absolute">
-            <div style="left: 8px; top: 0px; position: absolute; text-align: center; color: black; font-size: 36px; font-family: Open Sans Semibold; font-weight: 600; word-wrap: break-word">{{ user.last_name }}</div>
-            <div style="width: 202px; height: 34px; left: 0px; top: 45px; position: absolute; text-align: center; color: black; font-size: 24px; font-family: Open Sans Semibold; font-weight: 600; word-wrap: break-word">{{ user.first_name }}</div>
-        </div>
-        
-        <div style="width: 65px; height: 66px; left: 1307px; top: 68px; position: absolute">
-            <div style="width: 65px; height: 66px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 9999px"></div>
-            <img style="width: 54.17px; height: 44px; left: 8.12px; top: 11px; position: absolute" src="https://via.placeholder.com/54x44" />
-        </div>
-    </div>
+            
+            <div style="width: 202px; height: 79px; left: 1122px; top: 473px; position: absolute">
+                <div style="left: 8px; top: 0px; position: absolute; text-align: center; color: black; font-size: 36px; font-family: 'Open Sans Semibold', sans-serif; font-weight: 600; word-wrap: break-word">{{ user.last_name }}</div>
+                <div style="width: 202px; height: 34px; left: 0px; top: 45px; position: absolute; text-align: center; color: black; font-size: 24px;  font-family: 'Open Sans Semibold', sans-serif; font-weight: 600; word-wrap: break-word">{{ user.first_name }}</div>
+            </div>
     
-    <!-- Модальные окна -->
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p id="modal-text"></p>
+            <div style="width: 228px; height: 52px; left: 116px; top: 898px; position: absolute">
+                <div style="width: 228px; height: 52px; left: 0px; top: 0px; position: absolute; background: #189EA0; border-radius: 20px"></div>
+                <div style="left: 73px; top: 13px; position: absolute; text-align: right; color: white; font-size: 20px;  font-family: 'Open Sans Semibold', sans-serif; font-weight: 600; word-wrap: break-word">
+                    <a href="{% url 'logout' %}" style="color: white; text-decoration: none;">Выйти</a>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            var modal = document.getElementById("myModal");
-            var modalText = document.getElementById("modal-text");
-            var span = document.getElementsByClassName("close")[0];
-
-            document.querySelectorAll('.open-modal').forEach(item => {
-                item.addEventListener('click', event => {
-                    event.preventDefault();
-                    modalText.textContent = event.target.dataset.content;
-                    modal.style.display = "block";
+    
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p id="modal-text"></p>
+            </div>
+        </div>
+    
+        <script>
+            document.addEventListener('DOMContentLoaded', (event) => {
+                var modal = document.getElementById("myModal");
+                var modalText = document.getElementById("modal-text");
+                var span = document.getElementsByClassName("close")[0];
+    
+                document.querySelectorAll('.open-modal').forEach(item => {
+                    item.addEventListener('click', event => {
+                        event.preventDefault();
+                        modalText.textContent = event.target.dataset.content;
+                        modal.style.display = "block";
+                    });
                 });
-            });
-
-            span.onclick = function() {
-                modal.style.display = "none";
-            }
-
-            window.onclick = function(event) {
-                if (event.target == modal) {
+    
+                span.onclick = function() {
                     modal.style.display = "none";
                 }
-            }
-        });
-    </script>
-</body>
-</html>
+    
+                window.onclick = function(event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+            });
+        </script>
+    </body>
+    </html>
+        
