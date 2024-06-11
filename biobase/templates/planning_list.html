@@ -3,16 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <title>Cultivation Planning List</title>
+    <style>
+        h1 {
+            text-align: center;
+            font-weight: 600;
+        }
+
+       .search-container {
+            width: 25%;
+            height: 50%;
+            padding-left: 15px;
+            padding-right: 16px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            background: white;
+            border-radius: 5px;
+            border: 1px black solid;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            display: flex;
+            margin: auto;
+        }
+        .search-container input[type="text"],
+        .search-container input[type="date"] {
+            flex: 1 1 0;
+            height: 24px;
+            padding-left: 8px;
+            padding-right: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .search-button {
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            border: none;
+            background: none;
+            cursor: pointer;
+            position: relative;
+        }
+        .search-button div {
+            width: 12px;
+            height: 6px;
+            position: absolute;
+            border: 2px #189EA0 solid;
+            left: 6px;
+            top: 9px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        li strong {
+            color: #189EA0;
+        }
+        div.pagination {
+            margin-top: 20px;
+        }
+        div.pagination a {
+            background-color: #189EA0;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        div.pagination a:hover {
+            background-color: #13575d;
+        }
+    </style>
 </head>
 <body>
     <h1>Cultivation Planning List</h1>
-    <form method="GET">
-        <select name="search_type">
+    <form method="GET" class="search-container" id="search-form">
+        <select name="search_type" id="search_type">
             <option value="name" {% if request.GET.search_type == "name" %}selected{% endif %}>Search by Name</option>
             <option value="date" {% if request.GET.search_type == "date" %}selected{% endif %}>Search by Date</option>
             <option value="responsible" {% if request.GET.search_type == "responsible" %}selected{% endif %}>Search by Responsible</option>
         </select>
-        
+
         <div id="search_name" {% if request.GET.search_type != "name" %}style="display:none"{% endif %}>
             <input type="text" name="q" placeholder="Search by name" value="{{ request.GET.q }}">
         </div>
@@ -25,8 +101,10 @@
         <div id="search_responsible" {% if request.GET.search_type != "responsible" %}style="display:none"{% endif %}>
             <input type="text" name="responsible" placeholder="Responsible" value="{{ request.GET.responsible }}">
         </div>
-        
-        <button type="submit">Search</button>
+    
+        <button type="button" class="search-button" id="search-submit">
+            <div></div>
+        </button>
     </form>
     <ul>
         {% for planning in plannings %}
@@ -38,7 +116,7 @@
             </li>
         {% endfor %}
     </ul>
-    <div>
+    <div class="pagination">
         {% if plannings.has_previous %}
             <a href="?page={{ plannings.previous_page_number }}{% if request.GET.search_type %}&search_type={{ request.GET.search_type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.responsible %}&responsible={{ request.GET.responsible }}{% endif %}">Previous</a>
         {% endif %}
@@ -49,12 +127,17 @@
             <a href="?page={{ plannings.next_page_number }}{% if request.GET.search_type %}&search_type={{ request.GET.search_type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.responsible %}&responsible={{ request.GET.responsible }}{% endif %}">Next</a>
         {% endif %}
     </div>
-    
+
     <script>
-        document.querySelector('select[name="search_type"]').addEventListener('change', function() {
-            document.getElementById('search_name').style.display = this.value == 'name' ? 'block' : 'none';
-            document.getElementById('search_date').style.display = this.value == 'date' ? 'block' : 'none';
-            document.getElementById('search_responsible').style.display = this.value == 'responsible' ? 'block' : 'none';
+        document.getElementById('search-submit').addEventListener('click', function() {
+            document.getElementById('search-form').submit();
+        });
+
+        document.getElementById('search_type').addEventListener('change', function() {
+            var searchType = this.value;
+            document.getElementById('search_name').style.display = searchType == 'name' ? 'block' : 'none';
+            document.getElementById('search_date').style.display = searchType == 'date' ? 'block' : 'none';
+            document.getElementById('search_responsible').style.display = searchType == 'responsible' ? 'block' : 'none';
         });
     </script>
 </body>

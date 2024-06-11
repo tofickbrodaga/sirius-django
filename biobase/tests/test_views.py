@@ -218,15 +218,14 @@ class ChooseObjectViewTests(TestCase):
         response = self.client.get(reverse('choose_object', kwargs={'model_name': 'Strains'}))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'choose_object.html')
-        self.assertContains(response, 'Strain')
+        self.assertContains(response, self.strain.UIN)
 
     def test_choose_object_post(self):
         response = self.client.post(reverse('choose_object', kwargs={'model_name': 'Strains'}), {
-            'object_id': self.strain.id
+            'object_id': str(self.strain.id)
         })
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('edit_model', kwargs={'model_name': 'Strains', 'object_id': self.strain.id}))
-
 
 class EditModelViewTests(TestCase):
     def setUp(self):

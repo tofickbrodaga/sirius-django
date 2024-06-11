@@ -17,8 +17,10 @@ from .serializers import (CultivationPlanningSerializer, CulturesSerializer,
                           StrainProcessingSerializer, StrainsSerializer,
                           SubstanceIdentificationSerializer)
 
+
 safe_methods = 'GET', 'HEAD', 'OPTIONS'
 unsafe_methods = 'POST', 'DELETE', 'PUT'
+
 
 def check_auth(view: Callable) -> Callable:
     def new_view(request):
@@ -144,6 +146,7 @@ def main_menu(request):
         'user': user
     })
 
+
 def login_view(request):
     error_message = None
 
@@ -242,10 +245,28 @@ def choose_object(request, model_name):
     if not model_class:
         return redirect('choose_model')
 
-    objects = model_class.objects.all()
+    objects = None
+
+    object_str_methods = {
+    'Strains': 'UIN',
+    'StrainProcessing': 'description',
+    'SubstanceIdentification': 'results',
+    'Experiments': 'results',
+    'CultivationPlanning': 'status',
+    'Projects': 'project_name',
+    'Cultures': 'id',
+    }
+
+    object_str_method = object_str_methods.get(model_name)
+
+    if object_str_method:
+        objects = model_class.objects.all().values_list('id', object_str_method)
+
     if request.method == 'POST':
         object_id = request.POST.get('object_id')
         if object_id:
+            obj = model_class.objects.get(pk=object_id)
+            getattr(obj, object_str_method)
             return redirect('edit_model', model_name=model_name, object_id=object_id)
 
     return render(request, 'choose_object.html', {
@@ -267,7 +288,7 @@ def edit_model(request, model_name, object_id):
         form = form_class(request.POST, instance=obj)
         if form.is_valid():
             form.save()
-            return redirect('edit_model', model_name=model_name, object_id=object_id)  # Редирект на ту же страницу после сохранения
+            return redirect('edit_model', model_name=model_name, object_id=object_id)
     else:
         form = form_class(instance=obj)
 
