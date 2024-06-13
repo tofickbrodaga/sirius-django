@@ -94,14 +94,12 @@
         <div class="title">Выберите модель:</div>
         <form method="get">
             <div class="select-container">
-                <select name="model" id="model" onchange="resizeContainer(this.value); this.form.submit()">
-                    <option value="">--Select a model--</option>
+                <select name="model" id="model" onchange="this.form.submit()">
+                    <option value="">--Выберите модель--</option>
                     {% for model in model_forms %}
                         <option value="{{ model }}" {% if selected_model == model %}selected{% endif %}>{{ model|title }}</option>
                     {% endfor %}
                 </select>
-                <div style="width: 24px; height: 24px; position: relative;">
-                </div>
             </div>
         </form>
 
@@ -111,6 +109,7 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="hidden" name="model" value="{{ selected_model }}">
+                <input type="hidden" name="created_by" value="{{ request.user.id }}">
                 <button type="submit" class="create-button">Создать</button>
             </form>
         {% endif %}
@@ -120,11 +119,7 @@
     <script>
         function resizeContainer(value) {
             var container = document.querySelector('.container');
-            if (value === "") {
-                container.style.height = "180px";
-            } else {
-                container.style.height = "300px";
-            }
+            container.style.height = value === "" ? "180px" : "300px";
         }
     </script>
 </body>

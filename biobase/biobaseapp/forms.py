@@ -21,17 +21,14 @@ class ModelSelectionForm(forms.Form):
     object_id = forms.CharField(max_length=100)
 
 class CustomUserCreationForm(UserCreationForm):
-
     class Meta(UserCreationForm):
         model = CustomUser
         fields = ('username', 'email')
 
 class CustomUserChangeForm(UserChangeForm):
-
     class Meta:
         model = CustomUser
         fields = ('first_name', 'last_name', 'email')
-
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Логин')
@@ -53,43 +50,62 @@ class LoginForm(forms.Form):
                 user.save()
             except CustomUser.DoesNotExist:
                 raise forms.ValidationError('Пользователь с таким логином не найден.')
-        return cleaned_data
+        return super().clean()
 
+class BaseModelForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        for field_name in ['created_by', 'responsible', 'identified_by', 'started_by']:
+            if field_name in self.fields:
+                self.fields[field_name].widget = forms.HiddenInput()
+                if not self.instance.pk:
+                    self.fields[field_name].required = True
 
-class StrainsForm(forms.ModelForm):
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if self.user:
+            for field_name in ['created_by', 'responsible', 'identified_by', 'started_by']:
+                if hasattr(instance, field_name):
+                    setattr(instance, field_name, self.user)
+        if commit:
+            instance.save()
+        return instance
+
+class StrainsForm(BaseModelForm):
     class Meta:
         model = Strains
-        fields = ['UIN', 'name', 'pedigree', 'mutations', 'transformations', 'creation_date', 'created_by']
+        fields = '__all__'
 
-class StrainProcessingForm(forms.ModelForm):
+class StrainProcessingForm(BaseModelForm):
     class Meta:
         model = StrainProcessing
-        fields = ['strain_id', 'processing_date', 'description', 'responsible']
+        fields = '__all__'
 
-class SubstanceIdentificationForm(forms.ModelForm):
+class SubstanceIdentificationForm(BaseModelForm):
     class Meta:
         model = SubstanceIdentification
-        fields = ['strain_id', 'identification_date', 'results', 'identified_by']
+        fields = '__all__'
 
-class ExperimentsForm(forms.ModelForm):
+class ExperimentsForm(BaseModelForm):
     class Meta:
         model = Experiments
-        fields = ['strain_UIN', 'start_date', 'end_date', 'growth_medium', 'results', 'created_by']
+        fields = '__all__'
 
-class CultivationPlanningForm(forms.ModelForm):
+class CultivationPlanningForm(BaseModelForm):
     class Meta:
         model = CultivationPlanning
-        fields = ['strain_ID', 'planning_date', 'completion_date', 'growth_medium', 'status', 'started_by']
+        fields = '__all__'
 
-class ProjectsForm(forms.ModelForm):
+class ProjectsForm(BaseModelForm):
     class Meta:
         model = Projects
-        fields = ['project_name', 'start_date', 'end_date', 'results', 'created_by']
+        fields = '__all__'
 
-class CulturesForm(forms.ModelForm):
+class CulturesForm(BaseModelForm):
     class Meta:
         model = Cultures
-        fields = ['project_id', 'planning_date', 'results', 'created_by']
+        fields = '__all__'
 
 CustomUserFormSet = modelformset_factory(CustomUser, form=CustomUserChangeForm, extra=0)
 StrainsFormSet = modelformset_factory(Strains, form=StrainsForm, extra=0)

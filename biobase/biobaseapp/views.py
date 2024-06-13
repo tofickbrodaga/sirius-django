@@ -1,13 +1,12 @@
 from typing import Callable
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import BasePermission
-from django.contrib.auth import logout
 
 from .forms import *
 from .models import (CultivationPlanning, Cultures, Experiments, Projects,
@@ -16,7 +15,6 @@ from .serializers import (CultivationPlanningSerializer, CulturesSerializer,
                           ExperimentsSerializer, ProjectsSerializer,
                           StrainProcessingSerializer, StrainsSerializer,
                           SubstanceIdentificationSerializer)
-
 
 safe_methods = 'GET', 'HEAD', 'OPTIONS'
 unsafe_methods = 'POST', 'DELETE', 'PUT'
@@ -177,10 +175,10 @@ def logout_view(request):
 def create_all(request):
     model_forms = {
         'strains': StrainsForm,
-        'strain_processing': StrainProcessingForm,
-        'substance_identification': SubstanceIdentificationForm,
+        'strainprocessing': StrainProcessingForm,
+        'substanceidentification': SubstanceIdentificationForm,
         'experiments': ExperimentsForm,
-        'cultivation_planning': CultivationPlanningForm,
+        'cultivationplanning': CultivationPlanningForm,
         'projects': ProjectsForm,
         'cultures': CulturesForm,
     }
@@ -188,21 +186,19 @@ def create_all(request):
     if request.method == 'POST':
         selected_model = request.POST.get('model')
         if selected_model not in model_forms:
-            return HttpResponseBadRequest("Invalid model selected")
+            return HttpResponseBadRequest("Неверно выбрана модель")
 
         form_class = model_forms[selected_model]
-        form = form_class(request.POST, prefix=selected_model)
+        form = form_class(request.POST)
         if form.is_valid():
-            form.save()
+            instance = form.save(commit=False)
+            instance.created_by = request.user  # Устанавливаем текущего пользователя
+            instance.save()
             return redirect('index')
 
     else:
         selected_model = request.GET.get('model')
-        if selected_model in model_forms:
-            form_class = model_forms[selected_model]
-            form = form_class(prefix=selected_model)
-        else:
-            form = None
+        form = model_forms[selected_model](user=request.user) if selected_model in model_forms else None
 
     return render(request, 'create_all.html', {
         'form': form,
@@ -285,12 +281,12 @@ def edit_model(request, model_name, object_id):
     obj = get_object_or_404(model_class, id=object_id)
 
     if request.method == 'POST':
-        form = form_class(request.POST, instance=obj)
+        form = form_class(request.POST, instance=obj, user=request.user)
         if form.is_valid():
             form.save()
             return redirect('edit_model', model_name=model_name, object_id=object_id)
     else:
-        form = form_class(instance=obj)
+        form = form_class(instance=obj, user=request.user)
 
     return render(request, 'edit_model.html', {
         'form': form,
