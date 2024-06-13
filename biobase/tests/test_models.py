@@ -27,7 +27,7 @@ class ModelTests(TestCase):
             strain_id=self.strain,
             processing_date=timezone.now().date(),
             description="Processing info",
-            responsible=self.user
+            created_by=self.user
         )
         self.assertEqual(processing.description, "Processing info")
 
@@ -36,7 +36,7 @@ class ModelTests(TestCase):
             strain_id=self.strain,
             identification_date=timezone.now().date(),
             results="Identification results",
-            identified_by=self.user
+            created_by=self.user
         )
         self.assertEqual(identification.results, "Identification results")
 
@@ -58,7 +58,7 @@ class ModelTests(TestCase):
             completion_date=timezone.now().date(),
             growth_medium="Growth medium info",
             status="Planned",
-            started_by=self.user
+            created_by=self.user
         )
         self.assertEqual(planning.status, "Planned")
 

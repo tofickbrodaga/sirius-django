@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from biobaseapp.models import Strains, Projects, CultivationPlanning, SubstanceIdentification, Experiments
+from biobaseapp.forms import StrainsForm
 from django.utils import timezone
 
 User = get_user_model()
@@ -26,13 +27,13 @@ class MainMenuViewTests(TestCase):
             completion_date='2024-01-10',
             growth_medium="Medium info",
             status="Planned",
-            started_by=self.user
+            created_by=self.user
         )
         self.identification = SubstanceIdentification.objects.create(
             strain_id=self.strain,
             identification_date='2024-01-01',
             results="Identification results",
-            identified_by=self.user
+            created_by=self.user
         )
         self.experiment = Experiments.objects.create(
             strain_UIN=self.strain,
@@ -154,21 +155,30 @@ class CreateAllViewTests(TestCase):
             'created_by': self.user.id
         }
 
-    def test_create_all_get(self):
-        response = self.client.get(reverse('create_all'))
+    def test_create_all_get_valid_model(self):
+        response = self.client.get(reverse('create_all'), {'model': 'strains'})
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'create_all.html')
+        self.assertIn('form', response.context)
+        self.assertIsInstance(response.context['form'], StrainsForm)
+
+    def test_create_all_get_invalid_model(self):
+        response = self.client.get(reverse('create_all'), {'model': 'invalid_model'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'create_all.html')
+        self.assertIsNone(response.context['form'])
 
     def test_create_all_post_valid_data(self):
-        response = self.client.post(reverse('create_all'), {
+        url = reverse('create_all')
+        response = self.client.post(url, {
             'model': 'strains',
-            'strains-UIN': self.strains_data['UIN'],
-            'strains-name': self.strains_data['name'],
-            'strains-pedigree': self.strains_data['pedigree'],
-            'strains-mutations': self.strains_data['mutations'],
-            'strains-transformations': self.strains_data['transformations'],
-            'strains-creation_date': self.strains_data['creation_date'],
-            'strains-created_by': self.strains_data['created_by'],
+            'UIN': 'UIN12345',
+            'name': 'Test Strain',
+            'pedigree': 'Pedigree info',
+            'mutations': 'Mutations info',
+            'transformations': 'Transformations info',
+            'creation_date': '2024-01-01',
+            'created_by': self.user.id
         })
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Strains.objects.filter(UIN='UIN12345').exists())

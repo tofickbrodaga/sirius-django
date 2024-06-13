@@ -112,7 +112,7 @@ class StrainProcessingAPITest(APITestCase):
             'strain_id': strain.id,
             'processing_date': now().date(),
             'description': 'None',
-            'responsible': user.id,
+            'created_by': user.id,
         }
 
         # POST
@@ -197,7 +197,7 @@ class SubstanceIdentificationAPITest(APITestCase):
             'strain_id': strain.id,
             'identification_date': now().date(),
             'results': 'Positive',
-            'identified_by': user.id
+            'created_by': user.id
         }
 
         # POST
@@ -363,7 +363,7 @@ class CultivationPlanningAPITest(APITestCase):
             'completion_date': now().date(),
             'growth_medium': 'Medium 1',
             'status': 'Planned',
-            'started_by': user.id
+            'created_by': user.id
         }
 
         # POST

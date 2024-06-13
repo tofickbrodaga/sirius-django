@@ -12,9 +12,9 @@ from .forms import *
 from .models import (CultivationPlanning, Cultures, Experiments, Projects,
                      StrainProcessing, Strains, SubstanceIdentification)
 from .serializers import (CultivationPlanningSerializer, CulturesSerializer,
-                          ExperimentsSerializer, ProjectsSerializer,
-                          StrainProcessingSerializer, StrainsSerializer,
-                          SubstanceIdentificationSerializer)
+                        ExperimentsSerializer, ProjectsSerializer,
+                        StrainProcessingSerializer, StrainsSerializer,
+                        SubstanceIdentificationSerializer)
 
 safe_methods = 'GET', 'HEAD', 'OPTIONS'
 unsafe_methods = 'POST', 'DELETE', 'PUT'
@@ -29,22 +29,22 @@ def check_auth(view: Callable) -> Callable:
 
 
 class MyPermission(BasePermission):
-     def has_permission(self, request, _):
-         if request.method in safe_methods:
-             return bool(request.user and request.user.is_authenticated)
-         elif request.method in unsafe_methods:
-             return bool(request.user and request.user.is_superuser)
-         return False
+    def has_permission(self, request, _):
+        if request.method in safe_methods:
+            return bool(request.user and request.user.is_authenticated)
+        elif request.method in unsafe_methods:
+            return bool(request.user and request.user.is_superuser)
+        return False
 
 
 def create_viewset(model_class, serializer):
-     class ViewSet(viewsets.ModelViewSet):
-         queryset = model_class.objects.all()
-         serializer_class = serializer
-         permission_classes = [MyPermission]
-         authentication_classes = [TokenAuthentication]
+    class ViewSet(viewsets.ModelViewSet):
+        queryset = model_class.objects.all()
+        serializer_class = serializer
+        permission_classes = [MyPermission]
+        authentication_classes = [TokenAuthentication]
 
-     return ViewSet
+    return ViewSet
 
 
 StrainViewSet = create_viewset(Strains, StrainsSerializer)
@@ -76,7 +76,7 @@ class StrainsListView(ListView):
             queryset = queryset.filter(creation_date__range=[date_from, date_to])
         elif search_type == 'created_by' and responsible:
             queryset = queryset.filter(created_by__username__icontains=responsible)
-            
+
         return queryset
 
 
@@ -111,21 +111,30 @@ class ExperimentsListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset().order_by('id')  # Добавлено упорядочение
+        queryset = super().get_queryset().order_by('id')
         search_type = self.request.GET.get('search_type')
         query = self.request.GET.get('q')
         date_from = self.request.GET.get('date_from')
         date_to = self.request.GET.get('date_to')
         responsible = self.request.GET.get('created_by')
-        
+
         if search_type == 'name' and query:
             queryset = queryset.filter(strain_UIN__name__icontains=query)
         elif search_type == 'date' and date_from and date_to:
             queryset = queryset.filter(start_date__range=[date_from, date_to])
         elif search_type == 'created_by' and responsible:
             queryset = queryset.filter(created_by__username__icontains=responsible)
-            
+
         return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_type'] = self.request.GET.get('search_type', '')
+        context['q'] = self.request.GET.get('q', '')
+        context['date_from'] = self.request.GET.get('date_from', '')
+        context['date_to'] = self.request.GET.get('date_to', '')
+        context['created_by'] = self.request.GET.get('created_by', '')
+        return context
 
 
 def main_menu(request):
@@ -141,7 +150,7 @@ def main_menu(request):
         'identifications': identifications,
         'experiments': experiments,
         'projects': projects,
-        'user': user
+        'user': user,
     })
 
 
@@ -166,6 +175,7 @@ def login_view(request):
         'error_message': error_message,
     }
     return render(request, 'login.html', context)
+
 
 def logout_view(request):
     logout(request)
@@ -203,7 +213,7 @@ def create_all(request):
     return render(request, 'create_all.html', {
         'form': form,
         'model_forms': model_forms.keys(),
-        'selected_model': selected_model
+        'selected_model': selected_model,
     })
 
 
@@ -233,7 +243,7 @@ def choose_model(request):
         if model_name:
             return redirect('choose_object', model_name=model_name)
     return render(request, 'choose_model.html', {
-        'models': MODEL_FORMS.keys()
+        'models': MODEL_FORMS.keys(),
     })
 
 def choose_object(request, model_name):
@@ -244,13 +254,13 @@ def choose_object(request, model_name):
     objects = None
 
     object_str_methods = {
-    'Strains': 'UIN',
-    'StrainProcessing': 'description',
-    'SubstanceIdentification': 'results',
-    'Experiments': 'results',
-    'CultivationPlanning': 'status',
-    'Projects': 'project_name',
-    'Cultures': 'id',
+        'Strains': 'UIN',
+        'StrainProcessing': 'description',
+        'SubstanceIdentification': 'results',
+        'Experiments': 'results',
+        'CultivationPlanning': 'status',
+        'Projects': 'project_name',
+        'Cultures': 'id',
     }
 
     object_str_method = object_str_methods.get(model_name)
