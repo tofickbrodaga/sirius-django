@@ -52,6 +52,10 @@ class LoginForm(forms.Form):
                 raise forms.ValidationError('Пользователь с таким логином не найден.')
         return super().clean()
 
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 class BaseModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -65,8 +69,8 @@ class BaseModelForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         if self.user:
-            for field_name in ['created_by', 'responsible', 'identified_by', 'started_by']:
-                if hasattr(instance, field_name):
+            for field_name in ['created_by', 'created_by', 'identified_by', 'started_by']:
+                if hasattr(instance, field_name) and not getattr(instance, field_name):
                     setattr(instance, field_name, self.user)
         if commit:
             instance.save()
@@ -82,6 +86,14 @@ class StrainProcessingForm(BaseModelForm):
         model = StrainProcessing
         fields = '__all__'
 
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if self.user and not instance.responsible:
+            instance.created_by = self.user
+        if commit:
+            instance.save()
+        return instance
+
 class SubstanceIdentificationForm(BaseModelForm):
     class Meta:
         model = SubstanceIdentification
@@ -92,22 +104,54 @@ class ExperimentsForm(BaseModelForm):
         model = Experiments
         fields = '__all__'
 
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if self.user and not instance.created_by:
+            instance.created_by = self.user
+        if commit:
+            instance.save()
+        return instance
+
 class CultivationPlanningForm(BaseModelForm):
     class Meta:
         model = CultivationPlanning
         fields = '__all__'
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if self.user and not instance.created_by:
+            instance.created_by = self.user
+        if commit:
+            instance.save()
+        return instance
 
 class ProjectsForm(BaseModelForm):
     class Meta:
         model = Projects
         fields = '__all__'
 
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if self.user and not instance.created_by:
+            instance.created_by = self.user
+        if commit:
+            instance.save()
+        return instance
+
 class CulturesForm(BaseModelForm):
     class Meta:
         model = Cultures
         fields = '__all__'
 
-CustomUserFormSet = modelformset_factory(CustomUser, form=CustomUserChangeForm, extra=0)
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if self.user and not instance.created_by:
+            instance.created_by = self.user
+        if commit:
+            instance.save()
+        return instance
+
+CustomUserFormSet = modelformset_factory(User, form=CustomUserChangeForm, extra=0)
 StrainsFormSet = modelformset_factory(Strains, form=StrainsForm, extra=0)
 StrainProcessingFormSet = modelformset_factory(StrainProcessing, form=StrainProcessingForm, extra=0)
 SubstanceIdentificationFormSet = modelformset_factory(SubstanceIdentification, form=SubstanceIdentificationForm, extra=0)

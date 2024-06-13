@@ -4,6 +4,31 @@
     <meta charset="UTF-8">
     <title>Experiments List</title>
     <style>
+        .header {
+            width: 80%;
+            height: 75px;
+            position: fixed;
+            top: 0;
+            background: white;
+            box-shadow: 0px 4px 63px rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+        .header img {
+            width: 88px;
+            height: 27px;
+        }
+        .header .nav-link {
+            color: black;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-right: 20px;
+        }
         h1 {
             text-align: center;
             font-weight: 600;
@@ -81,6 +106,14 @@
     </style>
 </head>
 <body>
+    <div class="header">
+        <img src="/static/University_Sirius_Logo.png" />
+        <a class="nav-link" href="{% url 'index' %}">Профиль</a>
+        <a class="nav-link" href="{% url 'strains_list' %}">База штаммов</a>
+        <a class="nav-link" href="{% url 'planning_list' %}">База планирования</a>
+        <a class="nav-link" href="{% url 'experiments_list' %}">База экспериментов</a>
+        <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
+    </div>
     <h1>Experiments List</h1>
     <form method="GET" class="search-container" id="search-form">
         <select name="search_type" id="search_type">

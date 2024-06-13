@@ -48,7 +48,7 @@ class StrainProcessing(models.Model):
     strain_id = models.ForeignKey(Strains, on_delete=models.CASCADE)
     processing_date = models.DateField(validators=[validate_date, validate_date_not_in_future])
     description = models.TextField()
-    responsible = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class SubstanceIdentification(models.Model):
@@ -56,7 +56,7 @@ class SubstanceIdentification(models.Model):
     strain_id = models.ForeignKey(Strains, on_delete=models.CASCADE)
     identification_date = models.DateField(validators=[validate_date, validate_date_not_in_future])
     results = models.TextField()
-    identified_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class Experiments(models.Model):
@@ -80,7 +80,7 @@ class CultivationPlanning(models.Model):
     completion_date = models.DateField(validators=[validate_date])
     growth_medium = models.TextField()
     status = models.TextField()
-    started_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
     def clean(self):
         if self.completion_date and self.planning_date:

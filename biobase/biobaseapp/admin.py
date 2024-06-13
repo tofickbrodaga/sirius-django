@@ -24,15 +24,15 @@ class StrainsAdmin(admin.ModelAdmin):
 
 @admin.register(StrainProcessing)
 class StrainProcessingAdmin(admin.ModelAdmin):
-    list_display = ('id', 'strain_id', 'processing_date', 'responsible')
-    list_filter = ('processing_date', 'responsible')
+    list_display = ('id', 'strain_id', 'processing_date', 'created_by')
+    list_filter = ('processing_date', 'created_by')
     search_fields = ('strain_id__UIN',)
 
 
 @admin.register(SubstanceIdentification)
 class SubstanceIdentificationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'strain_id', 'identification_date', 'identified_by')
-    list_filter = ('identification_date', 'identified_by')
+    list_display = ('id', 'strain_id', 'identification_date', 'created_by')
+    list_filter = ('identification_date', 'created_by')
     search_fields = ('strain_id__UIN',)
 
 
@@ -45,8 +45,8 @@ class ExperimentsAdmin(admin.ModelAdmin):
 
 @admin.register(CultivationPlanning)
 class CultivationPlanningAdmin(admin.ModelAdmin):
-    list_display = ('id', 'strain_ID', 'planning_date', 'completion_date', 'status', 'started_by')
-    list_filter = ('planning_date', 'completion_date', 'status', 'started_by')
+    list_display = ('id', 'strain_ID', 'planning_date', 'completion_date', 'status', 'created_by')
+    list_filter = ('planning_date', 'completion_date', 'status', 'created_by')
     search_fields = ('strain_ID',)
 
 

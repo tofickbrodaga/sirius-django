@@ -68,13 +68,13 @@ class StrainsListView(ListView):
         query = self.request.GET.get('q')
         date_from = self.request.GET.get('date_from')
         date_to = self.request.GET.get('date_to')
-        responsible = self.request.GET.get('responsible')
+        responsible = self.request.GET.get('created_by')
         
         if search_type == 'name' and query:
             queryset = queryset.filter(name__icontains=query)
         elif search_type == 'date' and date_from and date_to:
             queryset = queryset.filter(creation_date__range=[date_from, date_to])
-        elif search_type == 'responsible' and responsible:
+        elif search_type == 'created_by' and responsible:
             queryset = queryset.filter(created_by__username__icontains=responsible)
             
         return queryset
@@ -92,13 +92,13 @@ class CultivationPlanningListView(ListView):
         query = self.request.GET.get('q')
         date_from = self.request.GET.get('date_from')
         date_to = self.request.GET.get('date_to')
-        responsible = self.request.GET.get('responsible')
+        responsible = self.request.GET.get('created_by')
         
         if search_type == 'name' and query:
             queryset = queryset.filter(strain_ID__name__icontains=query)
         elif search_type == 'date' and date_from and date_to:
             queryset = queryset.filter(planning_date__range=[date_from, date_to])
-        elif search_type == 'responsible' and responsible:
+        elif search_type == 'created_by' and responsible:
             queryset = queryset.filter(started_by__username__icontains=responsible)
             
         return queryset
@@ -116,13 +116,13 @@ class ExperimentsListView(ListView):
         query = self.request.GET.get('q')
         date_from = self.request.GET.get('date_from')
         date_to = self.request.GET.get('date_to')
-        responsible = self.request.GET.get('responsible')
+        responsible = self.request.GET.get('created_by')
         
         if search_type == 'name' and query:
             queryset = queryset.filter(strain_UIN__name__icontains=query)
         elif search_type == 'date' and date_from and date_to:
             queryset = queryset.filter(start_date__range=[date_from, date_to])
-        elif search_type == 'responsible' and responsible:
+        elif search_type == 'created_by' and responsible:
             queryset = queryset.filter(created_by__username__icontains=responsible)
             
         return queryset
@@ -131,8 +131,8 @@ class ExperimentsListView(ListView):
 def main_menu(request):
     user = request.user
     strains = Strains.objects.filter(created_by=user)
-    plans = CultivationPlanning.objects.filter(started_by=user)
-    identifications = SubstanceIdentification.objects.filter(identified_by=user)
+    plans = CultivationPlanning.objects.filter(created_by=user)
+    identifications = SubstanceIdentification.objects.filter(created_by=user)
     experiments = Experiments.objects.filter(created_by=user)
     projects = Projects.objects.filter(created_by=user)
     return render(request, 'index.html', {
@@ -192,7 +192,7 @@ def create_all(request):
         form = form_class(request.POST)
         if form.is_valid():
             instance = form.save(commit=False)
-            instance.created_by = request.user  # Устанавливаем текущего пользователя
+            instance.created_by = request.user
             instance.save()
             return redirect('index')
 
