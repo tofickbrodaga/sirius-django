@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from config import ALL
+
 from .models import (CultivationPlanning, Cultures, CustomUser, Experiments,
                      Projects, StrainProcessing, Strains,
                      SubstanceIdentification)
@@ -8,46 +10,46 @@ from .models import (CultivationPlanning, Cultures, CustomUser, Experiments,
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        fields = ALL
 
 
 class StrainsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Strains
-        fields = '__all__'
+        fields = ALL
 
 
 class StrainProcessingSerializer(serializers.ModelSerializer):
     class Meta:
         model = StrainProcessing
-        fields = '__all__'
+        fields = ALL
 
 
 class SubstanceIdentificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubstanceIdentification
-        fields = '__all__'
+        fields = ALL
 
 
 class ExperimentsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Experiments
-        fields = '__all__'
+        fields = ALL
 
 
 class CultivationPlanningSerializer(serializers.ModelSerializer):
     class Meta:
         model = CultivationPlanning
-        fields = '__all__'
+        fields = ALL
 
 
 class ProjectsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Projects
-        fields = '__all__'
+        fields = ALL
 
 
 class CulturesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cultures
-        fields = '__all__'
+        fields = ALL
