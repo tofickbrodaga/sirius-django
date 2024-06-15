@@ -120,11 +120,11 @@ class CultivationPlanningListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset().order_by(ID)
-        search_type = self.request.GET.get(SEARCH_TYPE)
-        query = self.request.GET.get(QUERY)
-        date_from = self.request.GET.get(DATE_FROM)
-        date_to = self.request.GET.get(DATE_TO)
+        queryset = super().get_queryset().order_by('id')
+        search_type = self.request.GET.get('search_type')
+        query = self.request.GET.get('q')
+        date_from = self.request.GET.get('date_from')
+        date_to = self.request.GET.get('date_to')
         responsible = self.request.GET.get(CREATED)
 
         if search_type == 'name' and query:
@@ -132,7 +132,7 @@ class CultivationPlanningListView(ListView):
         elif search_type == 'date' and date_from and date_to:
             queryset = queryset.filter(planning_date__range=[date_from, date_to])
         elif search_type == CREATED and responsible:
-            queryset = queryset.filter(started_by__username__icontains=responsible)
+            queryset = queryset.filter(created_by__username__icontains=responsible)
 
         return queryset
 
@@ -144,12 +144,12 @@ class ExperimentsListView(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        queryset = super().get_queryset().order_by('id')
-        search_type = self.request.GET.get('search_type')
-        query = self.request.GET.get('q')
-        date_from = self.request.GET.get('date_from')
-        date_to = self.request.GET.get('date_to')
-        responsible = self.request.GET.get('created_by')
+        queryset = super().get_queryset().order_by(ID)
+        search_type = self.request.GET.get(SEARCH_TYPE)
+        query = self.request.GET.get(QUERY)
+        date_from = self.request.GET.get(DATE_FROM)
+        date_to = self.request.GET.get(DATE_TO)
+        responsible = self.request.GET.get(CREATED)
 
         if search_type == 'name' and query:
             queryset = queryset.filter(strain_UIN__name__icontains=query)
@@ -166,7 +166,7 @@ class ExperimentsListView(ListView):
         context['q'] = self.request.GET.get(QUERY, '')
         context['date_from'] = self.request.GET.get(DATE_FROM, '')
         context['date_to'] = self.request.GET.get(DATE_TO, '')
-        context['created_by'] = self.request.GET.get(CREATED, '')
+        context['responsible'] = self.request.GET.get(CREATED, '')
         return context
 
 
