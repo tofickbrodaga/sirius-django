@@ -6,7 +6,9 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
-from config import MAX_50, MAX_100, MAX_255
+MAX_255 = 255
+MAX_100 = 100
+MAX_50 = 50
 
 
 def validate_date_future(current):

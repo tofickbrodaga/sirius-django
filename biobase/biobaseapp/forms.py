@@ -4,11 +4,24 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.forms import modelformset_factory
 from rest_framework.authtoken.models import Token
 
-from config import ALL, CREATED, MODEL_CHOICES
-
 from .models import (CultivationPlanning, Cultures, CustomUser, Experiments,
                      Projects, StrainProcessing, Strains,
                      SubstanceIdentification)
+
+ALL = '__all__'
+CREATED = 'created_by'
+
+MODEL_CHOICES = [
+    ('CustomUser', 'CustomUser'),
+    ('Strains', 'Strains'),
+    ('StrainProcessing', 'StrainProcessing'),
+    ('SubstanceIdentification', 'SubstanceIdentification'),
+    ('Experiments', 'Experiments'),
+    ('CultivationPlanning', 'CultivationPlanning'),
+    ('Projects', 'Projects'),
+    ('Cultures', 'Cultures'),
+]
+
 
 User = get_user_model()
 

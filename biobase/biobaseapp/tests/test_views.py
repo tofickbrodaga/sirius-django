@@ -13,53 +13,53 @@ class MainMenuViewTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='password')
         self.client.login(username='testuser', password='password')
         self.strain = Strains.objects.create(
-            UIN="UIN12345",
-            name="Test Strain",
-            pedigree="Pedigree info",
-            mutations="Mutations info",
-            transformations="Transformations info",
+            UIN='UIN12345',
+            name='Test Strain',
+            pedigree='Pedigree info',
+            mutations='Mutations info',
+            transformations='Transformations info',
             creation_date='2024-01-01',
-            created_by=self.user
+            created_by=self.user,
         )
         self.plan = CultivationPlanning.objects.create(
             strain_ID=self.strain,
             planning_date='2024-01-01',
             completion_date='2024-01-10',
-            growth_medium="Medium info",
-            status="Planned",
-            created_by=self.user
+            growth_medium='Medium info',
+            status='Planned',
+            created_by=self.user,
         )
         self.identification = SubstanceIdentification.objects.create(
             strain_id=self.strain,
             identification_date='2024-01-01',
-            results="Identification results",
+            results='Identification results',
             created_by=self.user
         )
         self.experiment = Experiments.objects.create(
             strain_UIN=self.strain,
             start_date='2024-01-01',
             end_date='2024-01-10',
-            growth_medium="Growth medium info",
-            results="Experiment results",
-            created_by=self.user
+            growth_medium='Growth medium info',
+            results='Experiment results',
+            created_by=self.user,
         )
         self.project = Projects.objects.create(
-            project_name="Test Project",
+            project_name='Test Project',
             start_date='2024-01-01',
             end_date='2024-01-10',
-            results="Project results",
-            created_by=self.user
+            results='Project results',
+            created_by=self.user,
         )
 
     def test_main_menu_view(self):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'index.html')
-        self.assertContains(response, "Test Strain")
-        self.assertContains(response, "Planned")
-        self.assertContains(response, "Identification results")
-        self.assertContains(response, "Experiment results")
-        self.assertContains(response, "Test Project")
+        self.assertContains(response, 'Test Strain')
+        self.assertContains(response, 'Planned')
+        self.assertContains(response, 'Identification results')
+        self.assertContains(response, 'Experiment results')
+        self.assertContains(response, 'Test Project')
 
 
 class LoginViewTests(TestCase):
@@ -105,13 +105,13 @@ class ViewTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='password')
         self.client.login(username='testuser', password='password')
         self.strain = Strains.objects.create(
-            UIN="UIN12345",
-            name="Test Strain",
-            pedigree="Pedigree info",
-            mutations="Mutations info",
-            transformations="Transformations info",
+            UIN='UIN12345',
+            name='Test Strain',
+            pedigree='Pedigree info',
+            mutations='Mutations info',
+            transformations='Transformations info',
             creation_date=timezone.now().date(),
-            created_by=self.user
+            created_by=self.user,
         )
 
     def test_strains_list_view(self):
@@ -152,7 +152,7 @@ class CreateAllViewTests(TestCase):
             'mutations': 'Mutations info',
             'transformations': 'Transformations info',
             'creation_date': '2024-01-01',
-            'created_by': self.user.id
+            'created_by': self.user.id,
         }
 
     def test_create_all_get_valid_model(self):
@@ -178,7 +178,7 @@ class CreateAllViewTests(TestCase):
             'mutations': 'Mutations info',
             'transformations': 'Transformations info',
             'creation_date': '2024-01-01',
-            'created_by': self.user.id
+            'created_by': self.user.id,
         })
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Strains.objects.filter(UIN='UIN12345').exists())
@@ -215,13 +215,13 @@ class ChooseObjectViewTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='password')
         self.client.login(username='testuser', password='password')
         self.strain = Strains.objects.create(
-            UIN="UIN12345",
-            name="Test Strain",
-            pedigree="Pedigree info",
-            mutations="Mutations info",
-            transformations="Transformations info",
+            UIN='UIN12345',
+            name='Test Strain',
+            pedigree='Pedigree info',
+            mutations='Mutations info',
+            transformations='Transformations info',
             creation_date='2024-01-01',
-            created_by=self.user
+            created_by=self.user,
         )
 
     def test_choose_object_get(self):
@@ -243,13 +243,13 @@ class EditModelViewTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='password')
         self.client.login(username='testuser', password='password')
         self.strain = Strains.objects.create(
-            UIN="UIN12345",
-            name="Test Strain",
-            pedigree="Pedigree info",
-            mutations="Mutations info",
-            transformations="Transformations info",
+            UIN='UIN12345',
+            name='Test Strain',
+            pedigree='Pedigree info',
+            mutations='Mutations info',
+            transformations='Transformations info',
             creation_date='2024-01-01',
-            created_by=self.user
+            created_by=self.user,
         )
 
     def test_edit_model_get(self):

@@ -1,11 +1,10 @@
 from rest_framework import serializers
 
-from config import ALL
-
 from .models import (CultivationPlanning, Cultures, CustomUser, Experiments,
                      Projects, StrainProcessing, Strains,
                      SubstanceIdentification)
 
+ALL = '__all__'
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:

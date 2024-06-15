@@ -8,9 +8,6 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import BasePermission
 
-from config import (CREATED, DATE_FROM, DATE_TO, ID, MODEL_CLASSES,
-                    MODEL_FORMS, POST, QUERY, SEARCH_TYPE)
-
 from .forms import (CultivationPlanningForm, CulturesForm, ExperimentsForm,
                     LoginForm, ProjectsForm, StrainProcessingForm, StrainsForm,
                     SubstanceIdentificationForm)
@@ -20,6 +17,34 @@ from .serializers import (CultivationPlanningSerializer, CulturesSerializer,
                           ExperimentsSerializer, ProjectsSerializer,
                           StrainProcessingSerializer, StrainsSerializer,
                           SubstanceIdentificationSerializer)
+
+ID = 'id'
+POST = 'POST'
+SEARCH_TYPE = 'search_type'
+QUERY = 'q'
+DATE_FROM = 'date_from'
+DATE_TO = 'date_to'
+CREATED = 'created_by'
+
+MODEL_FORMS = {
+    'Strains': StrainsForm,
+    'StrainProcessing': StrainProcessingForm,
+    'SubstanceIdentification': SubstanceIdentificationForm,
+    'Experiments': ExperimentsForm,
+    'CultivationPlanning': CultivationPlanningForm,
+    'Projects': ProjectsForm,
+    'Cultures': CulturesForm,
+}
+
+MODEL_CLASSES = {
+    'Strains': Strains,
+    'StrainProcessing': StrainProcessing,
+    'SubstanceIdentification': SubstanceIdentification,
+    'Experiments': Experiments,
+    'CultivationPlanning': CultivationPlanning,
+    'Projects': Projects,
+    'Cultures': Cultures,
+}
 
 safe_methods = 'GET', 'HEAD', 'OPTIONS'
 unsafe_methods = 'POST', 'DELETE', 'PUT'
