@@ -2,9 +2,8 @@
 from biobaseapp.models import (CultivationPlanning, Cultures, Experiments,
                                Projects, StrainProcessing, Strains,
                                SubstanceIdentification)
-
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.utils import timezone
 
 User = get_user_model()
