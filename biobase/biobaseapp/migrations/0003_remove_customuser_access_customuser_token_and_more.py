@@ -28,12 +28,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cultivationplanning',
             name='planning_date',
-            field=models.DateField(validators=[biobaseapp.models.validate_date, biobaseapp.models.validate_date_not_in_future]),
+            field=models.DateField(validators=[biobaseapp.models.validate_date, biobaseapp.models.validate_date_future]),
         ),
         migrations.AlterField(
             model_name='cultures',
             name='planning_date',
-            field=models.DateField(validators=[biobaseapp.models.validate_date_not_in_future, biobaseapp.models.validate_date]),
+            field=models.DateField(validators=[biobaseapp.models.validate_date_future, biobaseapp.models.validate_date]),
         ),
         migrations.AlterField(
             model_name='experiments',
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='experiments',
             name='start_date',
-            field=models.DateField(validators=[biobaseapp.models.validate_date, biobaseapp.models.validate_date_not_in_future]),
+            field=models.DateField(validators=[biobaseapp.models.validate_date, biobaseapp.models.validate_date_future]),
         ),
         migrations.AlterField(
             model_name='projects',
@@ -53,21 +53,21 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='projects',
             name='start_date',
-            field=models.DateField(validators=[biobaseapp.models.validate_date_not_in_future, biobaseapp.models.validate_date]),
+            field=models.DateField(validators=[biobaseapp.models.validate_date_future, biobaseapp.models.validate_date]),
         ),
         migrations.AlterField(
             model_name='strainprocessing',
             name='processing_date',
-            field=models.DateField(validators=[biobaseapp.models.validate_date, biobaseapp.models.validate_date_not_in_future]),
+            field=models.DateField(validators=[biobaseapp.models.validate_date, biobaseapp.models.validate_date_future]),
         ),
         migrations.AlterField(
             model_name='strains',
             name='creation_date',
-            field=models.DateField(validators=[biobaseapp.models.validate_date, biobaseapp.models.validate_date_not_in_future]),
+            field=models.DateField(validators=[biobaseapp.models.validate_date, biobaseapp.models.validate_date_future]),
         ),
         migrations.AlterField(
             model_name='substanceidentification',
             name='identification_date',
-            field=models.DateField(validators=[biobaseapp.models.validate_date, biobaseapp.models.validate_date_not_in_future]),
+            field=models.DateField(validators=[biobaseapp.models.validate_date, biobaseapp.models.validate_date_future]),
         ),
     ]

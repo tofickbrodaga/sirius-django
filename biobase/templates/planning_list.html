@@ -4,12 +4,37 @@
     <meta charset="UTF-8">
     <title>Cultivation Planning List</title>
     <style>
+        .header {
+            width: 80%;
+            height: 75px;
+            position: fixed;
+            top: 0;
+            background: white;
+            box-shadow: 0px 4px 63px rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+        .header img {
+            width: 88px;
+            height: 27px;
+        }
+        .header .nav-link {
+            color: black;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-right: 20px;
+        }
         h1 {
             text-align: center;
             font-weight: 600;
         }
 
-       .search-container {
+        .search-container {
             width: 25%;
             height: 50%;
             padding-left: 15px;
@@ -81,6 +106,14 @@
     </style>
 </head>
 <body>
+    <div class="header">
+        <img src="/static/University_Sirius_Logo.png" />
+        <a class="nav-link" href="{% url 'index' %}">Профиль</a>
+        <a class="nav-link" href="{% url 'strains_list' %}">База штаммов</a>
+        <a class="nav-link" href="{% url 'planning_list' %}">База планирования</a>
+        <a class="nav-link" href="{% url 'experiments_list' %}">База экспериментов</a>
+        <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
+    </div>
     <h1>Cultivation Planning List</h1>
     <form method="GET" class="search-container" id="search-form">
         <select name="search_type" id="search_type">
@@ -112,19 +145,19 @@
                 <strong>Strain:</strong> {{ planning.strain_ID.name }}<br>
                 <strong>Planning Date:</strong> {{ planning.planning_date }}<br>
                 <strong>Completion Date:</strong> {{ planning.completion_date }}<br>
-                <strong>Started by:</strong> {{ planning.started_by.username }}
+                <strong>Started by:</strong> {{ planning.created_by.username }}
             </li>
         {% endfor %}
     </ul>
     <div class="pagination">
-        {% if plannings.has_previous %}
-            <a href="?page={{ plannings.previous_page_number }}{% if request.GET.search_type %}&search_type={{ request.GET.search_type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.responsible %}&responsible={{ request.GET.responsible }}{% endif %}">Previous</a>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_type %}&search_type={{ search_type }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}{% if responsible %}&responsible={{ responsible }}{% endif %}">Previous</a>
         {% endif %}
         
-        <span>Page {{ plannings.number }} of {{ plannings.paginator.num_pages }}</span>
+        <span>Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
         
-        {% if plannings.has_next %}
-            <a href="?page={{ plannings.next_page_number }}{% if request.GET.search_type %}&search_type={{ request.GET.search_type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.responsible %}&responsible={{ request.GET.responsible }}{% endif %}">Next</a>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_type %}&search_type={{ search_type }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}{% if responsible %}&responsible={{ responsible }}{% endif %}">Next</a>
         {% endif %}
     </div>
 

@@ -12,26 +12,55 @@
             justify-content: center;
             align-items: center;
             background: white;
+            font-family: 'Open Sans', sans-serif;
+        }
+        .header {
+            width: 80%;
+            height: 75px;
+            position: fixed;
+            top: 0;
+            background: white;
+            box-shadow: 0px 4px 63px rgba(0, 0, 0, 0.25);
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+        .header img {
+            width: 88px;
+            height: 27px;
+        }
+        .header .nav-link {
+            color: black;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-right: 20px;
         }
         .container {
-            width: 504px;
-            position: relative;
+            max-width: 80%;
+            width: 50%; /* Занимает всю доступную ширину */
+            position: absolute;
+            top: calc(75px + 20px);
             background: white;
             box-shadow: 0px 4px 62.9px rgba(0, 0, 0, 0.25);
             border-radius: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center; /* Выравнивание по центру по вертикали */
             padding: 50px;
             transition: height 0.3s ease;
         }
+
         .title {
             color: black;
             font-size: 24px;
-            font-family: 'Open Sans', sans-serif;
             font-weight: 600;
             text-align: center;
             margin-bottom: 20px;
+            width: 100%;
         }
         .select-container {
             width: 304px;
@@ -49,7 +78,6 @@
             flex: 1;
             color: #189EA0;
             font-size: 16px;
-            font-family: 'Gilroy', sans-serif;
             font-weight: 300;
             line-height: 24px;
             border: none;
@@ -67,41 +95,40 @@
             align-items: center;
             color: white;
             font-size: 16px;
-            font-family: 'Inter', sans-serif;
             font-weight: 500;
             cursor: pointer;
         }
         .home-link {
             color: black;
             font-size: 15px;
-            font-family: 'Open Sans', sans-serif;
             font-weight: 600;
-            line-height: 19.5px;
             text-align: center;
             margin-top: 20px;
-            cursor: pointer;
-        }
-        form {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
+            text-decoration: none;
             align-items: center;
         }
     </style>
 </head>
 <body>
+    <div class="header">
+        <img src="/static/University_Sirius_Logo.png" />
+        <a class="nav-link" href="{% url 'index' %}">Профиль</a>
+        <a class="nav-link" href="{% url 'strains_list' %}">База штаммов</a>
+        <a class="nav-link" href="{% url 'planning_list' %}">База планирования</a>
+        <a class="nav-link" href="{% url 'experiments_list' %}">База экспериментов</a>
+        <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
+    </div>
+
     <div class="container">
         <div class="title">Выберите модель:</div>
         <form method="get">
             <div class="select-container">
-                <select name="model" id="model" onchange="resizeContainer(this.value); this.form.submit()">
-                    <option value="">--Select a model--</option>
+                <select name="model" id="model" onchange="this.form.submit()">
+                    <option value="">--Выберите модель--</option>
                     {% for model in model_forms %}
                         <option value="{{ model }}" {% if selected_model == model %}selected{% endif %}>{{ model|title }}</option>
                     {% endfor %}
                 </select>
-                <div style="width: 24px; height: 24px; position: relative;">
-                </div>
             </div>
         </form>
 
@@ -111,6 +138,7 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 <input type="hidden" name="model" value="{{ selected_model }}">
+                <input type="hidden" name="created_by" value="{{ request.user.id }}">
                 <button type="submit" class="create-button">Создать</button>
             </form>
         {% endif %}
@@ -120,11 +148,7 @@
     <script>
         function resizeContainer(value) {
             var container = document.querySelector('.container');
-            if (value === "") {
-                container.style.height = "180px";
-            } else {
-                container.style.height = "300px";
-            }
+            container.style.height = "auto"; // Автоматическая высота контейнера
         }
     </script>
 </body>
