@@ -7,6 +7,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+
 OK = 200
 ERROR = 400
 MOVED = 302
