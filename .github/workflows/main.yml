@@ -8,10 +8,9 @@ jobs:
       postgres:
         image: postgres
         env:
-          PG_HOST: 127.0.0.1
-          PG_PORT: 5435
-          PG_USER: app
-          PG_PASSWORD: 123
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: 123
+          POSTGRES_DB: project_db
         ports:
         - 5435:5432
     steps:
@@ -44,6 +43,7 @@ jobs:
         flake8 forms.py
         flake8 serializers.py
         flake8 views.py
+
   tests:
     name: Tests Django
     runs-on: ubuntu-latest
@@ -51,10 +51,9 @@ jobs:
       postgres:
         image: postgres
         env:
-          PG_HOST: 127.0.0.1
-          PG_PORT: 5435
-          PG_USER: app
-          PG_PASSWORD: 123
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: 123
+          POSTGRES_DB: project_db
         ports:
         - 5435:5432
     steps:
@@ -73,6 +72,12 @@ jobs:
         pip install djangorestframework
         pip install psycopg2-binary
     - name: Run tests
+      env:
+        PG_HOST: 127.0.0.1
+        PG_PORT: 5435
+        PG_USER: app
+        PG_PASSWORD: 123
+        PG_DBNAME: project_db
       run: |
         cd biobase
         python3 manage.py test biobaseapp/tests/
