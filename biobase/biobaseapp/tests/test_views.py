@@ -43,10 +43,11 @@ class MainMenuViewTests(TestCase):
         )
         self.identification = SubstanceIdentification.objects.create(
             strain_id=self.strain,
-            identifications_date='2024-01-01',
+            identification_date='2024-01-01',
             results='Identification results',
             created_by=self.user,
         )
+
         self.experiment = Experiments.objects.create(
             strain_UIN=self.strain,
             start_date='2024-01-01',
