@@ -1,3 +1,4 @@
+"""Views for app."""
 from typing import Callable
 
 from django.contrib.auth import authenticate, login, logout
@@ -51,6 +52,16 @@ unsafe_methods = 'POST', 'DELETE', 'PUT'
 
 
 def check_auth(view: Callable) -> Callable:
+    """
+    Authenticate user before granting access to the view.
+
+    Parameters:
+        view (Callable): The view function to be authenticated.
+
+    Returns:
+        Callable: Either redirects to 'unauthorized' if user is not authenticated,
+                  or calls the original view function.
+    """
     def new_view(request):
         if not (request.user and request.user.is_authenticated):
             return redirect('unauthorized')
@@ -60,7 +71,24 @@ def check_auth(view: Callable) -> Callable:
 
 
 class MyPermission(BasePermission):
+    """
+    Custom permission class for checking user permissions.
+
+    Allows only authenticated users to perform safe methods (GET, HEAD, OPTIONS).
+    Allows only superusers to perform unsafe methods (POST, DELETE, PUT).
+    """
+
     def has_permission(self, request, _):
+        """
+        Check if user has permission to perform the request.
+
+        Args:
+            request: request object
+
+        Returns:
+            bool: True if user is authenticated, False otherwise
+
+        """
         if request.method in safe_methods:
             return bool(request.user and request.user.is_authenticated)
         elif request.method in unsafe_methods:
@@ -69,6 +97,17 @@ class MyPermission(BasePermission):
 
 
 def create_viewset(model_class, serializer):
+    """
+    Create a viewset for a given model class and serializer.
+
+    Args:
+        model_class (type): The model class to create the viewset for.
+        serializer (type): The serializer class to use for the viewset.
+
+    Returns:
+        type: The created viewset class.
+
+    """
     class ViewSet(viewsets.ModelViewSet):
         queryset = model_class.objects.all()
         serializer_class = serializer
@@ -90,12 +129,20 @@ CulturesViewSet = create_viewset(Cultures, CulturesSerializer)
 
 
 class StrainsListView(ListView):
+    """A view that displays a list of strains with pagination and search functionality."""
+
     model = Strains
     template_name = 'strains_list.html'
     context_object_name = 'strains'
     paginate_by = 10
 
     def get_queryset(self):
+        """
+        Get the queryset for the view.
+
+        Returns:
+            QuerySet: The queryset for the view.
+        """
         queryset = super().get_queryset().order_by(ID)
         search_type = self.request.GET.get(SEARCH_TYPE)
         query = self.request.GET.get(QUERY)
@@ -114,12 +161,20 @@ class StrainsListView(ListView):
 
 
 class CultivationPlanningListView(ListView):
+    """A view display a list of plannings with pagination and search functionality."""
+
     model = CultivationPlanning
     template_name = 'planning_list.html'
     context_object_name = 'plannings'
     paginate_by = 10
 
     def get_queryset(self):
+        """
+        Get the queryset for the view.
+
+        Returns:
+            QuerySet: The queryset for the view.
+        """
         queryset = super().get_queryset().order_by('id')
         search_type = self.request.GET.get('search_type')
         query = self.request.GET.get('q')
@@ -138,12 +193,20 @@ class CultivationPlanningListView(ListView):
 
 
 class ExperimentsListView(ListView):
+    """A view that displays a list of experiments with pagination and search functionality."""
+
     model = Experiments
     template_name = 'experiments_list.html'
     context_object_name = 'experiments'
     paginate_by = 10
 
     def get_queryset(self):
+        """
+        Get the queryset for the view.
+
+        Returns:
+            QuerySet: The queryset for the view.
+        """
         queryset = super().get_queryset().order_by(ID)
         search_type = self.request.GET.get(SEARCH_TYPE)
         query = self.request.GET.get(QUERY)
@@ -161,6 +224,15 @@ class ExperimentsListView(ListView):
         return queryset
 
     def get_context_data(self, **kwargs):
+        """
+        Get the context data for the view.
+
+        Args:
+            kwargs: The keyword arguments.
+
+        Returns:
+            dict: The context data for the view.
+        """
         context = super().get_context_data(**kwargs)
         context['search_type'] = self.request.GET.get(SEARCH_TYPE, '')
         context['q'] = self.request.GET.get(QUERY, '')
@@ -171,6 +243,15 @@ class ExperimentsListView(ListView):
 
 
 def main_menu(request):
+    """
+    Render the main menu page with the user's data.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered main menu page with the user's data.
+    """
     user = request.user
     strains = Strains.objects.filter(created_by=user)
     plans = CultivationPlanning.objects.filter(created_by=user)
@@ -192,6 +273,15 @@ def main_menu(request):
 
 
 def login_view(request):
+    """
+    View function for handling the login process.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The rendered login page with the form and error message.
+    """
     error_message = None
 
     if request.method == POST:
@@ -219,11 +309,29 @@ def login_view(request):
 
 
 def logout_view(request):
+    """
+    Log out the user and redirect them to the login page.
+
+    Parameters:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponseRedirect: A redirect response to the 'login' URL.
+    """
     logout(request)
     return redirect('login')
 
 
 def create_all(request):
+    """
+    Create instance of different model forms based on the selected model.
+
+    Parameters:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: A response with the rendered HTML content.
+    """
     model_forms = {
         'strains': StrainsForm,
         'strainprocessing': StrainProcessingForm,
@@ -267,6 +375,16 @@ def create_all(request):
 
 
 def choose_model(request):
+    """
+    View function that handles the selection of a model.
+
+    Args:
+        request: HttpRequest object containing the request data.
+
+    Returns:
+        HttpResponse: Response object that can be used to render a template or redirect
+        to another view.
+    """
     if request.method == POST:
         model_name = request.POST.get('model')
         if model_name:
@@ -281,6 +399,20 @@ def choose_model(request):
 
 
 def choose_object(request, model_name):
+    """
+    View function that handles the selection of an object from a given model.
+
+    Args:
+        request (HttpRequest): The HTTP request object containing the request data.
+        model_name (str): The name of the model.
+
+    Returns:
+        HttpResponse: The response object that can be used to render a template or
+        redirect to another view.
+
+    Raises:
+    HttpResponseRedirect: If the model class is not found, it redirects to the 'choose_model' view.
+    """
     model_class = MODEL_CLASSES.get(model_name)
     if not model_class:
         return redirect('choose_model')
@@ -318,6 +450,21 @@ def choose_object(request, model_name):
 
 
 def edit_model(request, model_name, object_id):
+    """
+    Edit a model instance.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        model_name (str): The name of the model.
+        object_id (int): The ID of the model instance.
+
+    Returns:
+        HttpResponse: The response object that can be used to render a template or
+        redirect to another view.
+
+    Raises:
+    404: If the model instance with the given ID is not found.
+    """
     form_class = MODEL_FORMS.get(model_name)
     model_class = MODEL_CLASSES.get(model_name)
 
