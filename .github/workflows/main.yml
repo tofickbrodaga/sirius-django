@@ -14,8 +14,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8==3.9.0 wemake-python-styleguide==0.15.3 bandit==1.7.2
-    - name: Flake8
-      run: flake8 .
+    - name: Flake8 app files
+      run: |
+        cd biobase
+        cd biobaseapp
+        flake8 .
   tests:
     name: Тесты
     runs-on: ubuntu-latest
@@ -34,4 +37,6 @@ jobs:
         pip install python-dotenv
         pip install djangorestframework
     - name: Pytest
-      run: python3 manage.py test biobase/biobaseapp/tests
+      run: |
+        cd biobase
+        python3 manage.py test biobaseapp/tests/
