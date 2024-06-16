@@ -1,6 +1,26 @@
 name: Проверка
 on: [push]
 jobs:
+  container-job:
+    name: Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          PG_HOST: 127.0.0.1
+          PG_PORT: 5435
+          PG_USER: app
+          PG_PASSWORD: 123
+        ports:
+        - 5435:5432
+    steps:
+    - uses: actions/checkout@v2
+    - name: Python installation
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+
   linter:
     name: Линтер
     runs-on: ubuntu-latest
@@ -31,10 +51,10 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_HOST: 127.0.0.1
-          POSTGRES_PORT: 5435
-          POSTGRES_USER: app
-          POSTGRES_PASSWORD: 123
+          PG_HOST: 127.0.0.1
+          PG_PORT: 5435
+          PG_USER: app
+          PG_PASSWORD: 123
         ports:
         - 5435:5432
     steps:
