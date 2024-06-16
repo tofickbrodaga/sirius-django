@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Experiments List</title>
+    <title>База Экспериментов</title>
     <style>
         .header {
             width: 80%;
@@ -113,25 +113,23 @@
         <a class="nav-link" href="{% url 'experiments_list' %}">База экспериментов</a>
         <a class="nav-link" href="{% url 'logout' %}">Выйти</a>
     </div>
-    <h1>Experiments List</h1>
+    <h1>База Экспериментов</h1>
     <form method="GET" class="search-container" id="search-form">
         <select name="search_type" id="search_type">
-            <option value="name" {% if search_type == "name" %}selected{% endif %}>Search by Name</option>
-            <option value="date" {% if search_type == "date" %}selected{% endif %}>Search by Date</option>
-            <option value="created_by" {% if search_type == "created_by" %}selected{% endif %}>Search by Responsible</option>
+            <option value="name" {% if request.GET.search_type == "name" %}selected{% endif %}>Search by Name</option>
+            <option value="date" {% if request.GET.search_type == "date" %}selected{% endif %}>Search by Date</option>
+            <option value="responsible" {% if request.GET.search_type == "responsible" %}selected{% endif %}>Search by Responsible</option>
         </select>
 
-        <div id="search_name" {% if search_type != "name" %}style="display:none"{% endif %}>
-            <input type="text" name="q" placeholder="Search by name" value="{{ q }}">
+        <div id="name-search" {% if request.GET.search_type != "name" %}style="display: none;"{% endif %}>
+            <input type="text" name="q" placeholder="Search by name" value="{{ request.GET.q }}">
         </div>
-        
-        <div id="search_date" {% if search_type != "date" %}style="display:none"{% endif %}>
-            <input type="date" name="date_from" placeholder="From" value="{{ date_from }}">
-            <input type="date" name="date_to" placeholder="To" value="{{ date_to }}">
+        <div id="date-search" {% if request.GET.search_type != "date" %}style="display: none;"{% endif %}>
+            <input type="date" name="date_from" placeholder="From" value="{{ request.GET.date_from }}">
+            <input type="date" name="date_to" placeholder="To" value="{{ request.GET.date_to }}">
         </div>
-        
-        <div id="search_responsible" {% if search_type != "created_by" %}style="display:none"{% endif %}>
-            <input type="text" name="created_by" placeholder="Responsible" value="{{ created_by }}">
+        <div id="responsible-search" {% if request.GET.search_type != "responsible" %}style="display: none;"{% endif %}>
+            <input type="text" name="responsible" placeholder="Responsible" value="{{ request.GET.responsible }}">
         </div>
     
         <button type="button" class="search-button" id="search-submit">
@@ -141,22 +139,23 @@
     <ul>
         {% for experiment in experiments %}
             <li>
-                <strong>Strain UIN:</strong> {{ experiment.strain_UIN.name }}<br>
+                <strong>Strain:</strong> {{ experiment.strain_UIN.name }}<br>
                 <strong>Start Date:</strong> {{ experiment.start_date }}<br>
                 <strong>End Date:</strong> {{ experiment.end_date }}<br>
+                <strong>Results:</strong> {{ experiment.results }}<br>
                 <strong>Created by:</strong> {{ experiment.created_by.username }}
             </li>
         {% endfor %}
     </ul>
     <div class="pagination">
-        {% if experiments.has_previous %}
-            <a href="?page={{ experiments.previous_page_number }}{% if search_type %}&search_type={{ search_type }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}{% if responsible %}&responsible={{ responsible }}{% endif %}">Previous</a>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_type %}&search_type={{ search_type }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}{% if responsible %}&responsible={{ responsible }}{% endif %}">Previous</a>
         {% endif %}
         
-        <span>Page {{ experiments.number }} of {{ experiments.paginator.num_pages }}</span>
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
         
-        {% if experiments.has_next %}
-            <a href="?page={{ experiments.next_page_number }}{% if search_type %}&search_type={{ search_type }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}{% if responsible %}&responsible={{ responsible }}{% endif %}">Next</a>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_type %}&search_type={{ search_type }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if date_from %}&date_from={{ date_from }}{% endif %}{% if date_to %}&date_to={{ date_to }}{% endif %}{% if responsible %}&responsible={{ responsible }}{% endif %}">Next</a>
         {% endif %}
     </div>
 
@@ -167,9 +166,17 @@
 
         document.getElementById('search_type').addEventListener('change', function() {
             var searchType = this.value;
-            document.getElementById('search_name').style.display = searchType == 'name' ? 'block' : 'none';
-            document.getElementById('search_date').style.display = searchType == 'date' ? 'block' : 'none';
-            document.getElementById('search_responsible').style.display = searchType == 'created_by' ? 'block' : 'none';
+            document.getElementById('name-search').style.display = 'none';
+            document.getElementById('date-search').style.display = 'none';
+            document.getElementById('responsible-search').style.display = 'none';
+            
+            if (searchType === 'name') {
+                document.getElementById('name-search').style.display = 'block';
+            } else if (searchType === 'date') {
+                document.getElementById('date-search').style.display = 'block';
+            } else if (searchType === 'responsible') {
+                document.getElementById('responsible-search').style.display = 'block';
+            }
         });
     </script>
 </body>

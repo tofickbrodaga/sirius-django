@@ -148,14 +148,14 @@
         {% endfor %}
     </ul>
     <div class="pagination">
-        {% if strains.has_previous %}
-            <a href="?page={{ strains.previous_page_number }}{% if request.GET.search_type %}&search_type={{ request.GET.search_type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.responsible %}&responsible={{ request.GET.responsible }}{% endif %}">Previous</a>
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search_type %}&search_type={{ request.GET.search_type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.responsible %}&responsible={{ request.GET.responsible }}{% endif %}">Назад</a>
         {% endif %}
         
-        <span>Page {{ strains.number }} of {{ strains.paginator.num_pages }}</span>
+        <span>Страница {{ page_obj.number }} из {{ paginator.num_pages }}</span>
         
-        {% if strains.has_next %}
-            <a href="?page={{ strains.next_page_number }}{% if request.GET.search_type %}&search_type={{ request.GET.search_type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.responsible %}&responsible={{ request.GET.responsible }}{% endif %}">Next</a>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search_type %}&search_type={{ request.GET.search_type }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.date_from %}&date_from={{ request.GET.date_from }}{% endif %}{% if request.GET.date_to %}&date_to={{ request.GET.date_to }}{% endif %}{% if request.GET.responsible %}&responsible={{ request.GET.responsible }}{% endif %}">Далее</a>
         {% endif %}
     </div>
 
